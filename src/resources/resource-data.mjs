@@ -81,7 +81,7 @@ const CENSOR = {
   spends: [
     {
       id: "spend-free-strike",
-      description: "When an adjacent creature judged by you starts to shift, make a melee free strike against them and their speed becomes 0 until end of turn.",
+      description: "When an adjacent creature judged by you starts to shift, make a melee free strike against them and their speed becomes 0 until end of turn. [[/apply slowed turn]]",
       cost: 1,
       minLevel: 1,
     },
@@ -99,19 +99,19 @@ const CENSOR = {
     },
     {
       id: "spend-taunt",
-      description: "If you damage a creature judged by you with a melee ability, the creature is taunted by you until end of their next turn.",
+      description: "If you damage a creature judged by you with a melee ability, the creature is [[/apply taunted turn]] by you until end of their next turn.",
       cost: 1,
       minLevel: 1,
     },
     {
       id: "spend-judgment-frighten",
-      description: "When you use Judgment, if the target has P < AVERAGE, they are frightened of you (save ends).",
+      description: "When you use Judgment, if the target has P < AVERAGE, they are [[/apply frightened save]] of you (save ends).",
       cost: 1,
       minLevel: 3,
     },
     {
       id: "spend-judgment-chain-frighten",
-      description: "When a creature judged by you is reduced to 0 Stamina and you use Judgment as a free triggered action, if the new target has P < STRONG, they are frightened (save ends). If already frightened, they take holy damage equal to twice your Presence score.",
+      description: "When a creature judged by you is reduced to 0 Stamina and you use Judgment as a free triggered action, if the new target has P < STRONG, they are [[/apply frightened save]] (save ends). If already frightened, they take [[/damage 2*@characteristics.presence.value type=holy]] holy damage.",
       cost: 1,
       minLevel: 3,
     },

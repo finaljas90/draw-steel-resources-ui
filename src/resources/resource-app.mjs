@@ -147,20 +147,26 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     let passiveEffects = [];
 
     if (classDef) {
-      gains  = resolveEntries(classDef.gains, heroLevel).map((e) => ({
-        ...e,
-        label: gainLabel(e, actor),
-      }));
-      spends = resolveEntries(classDef.spends, heroLevel).map((e) => ({
-        ...e,
-        label: spendLabel(e),
-      }));
-      passiveEffects = (classDef.passiveEffects ?? [])
-        .filter((pe) => pe.minLevel <= heroLevel)
-        .map((pe) => ({
-          ...pe,
-          isActive: heroicValue >= pe.threshold,
-        }));
+      const enrichOpts = { rollData: actor.getRollData(), async: true };
+      const enrichedGains = resolveEntries(classDef.gains, heroLevel);
+      gains = [];
+      for (const e of enrichedGains) {
+        const enrichedDesc = await TextEditor.enrichHTML(e.description, enrichOpts);
+        gains.push({ ...e, description: enrichedDesc, label: gainLabel(e, actor) });
+      }
+      const enrichedSpends = resolveEntries(classDef.spends, heroLevel);
+      spends = [];
+      for (const e of enrichedSpends) {
+        const enrichedDesc = await TextEditor.enrichHTML(e.description, enrichOpts);
+        spends.push({ ...e, description: enrichedDesc, label: spendLabel(e) });
+      }
+      const rawPassives = (classDef.passiveEffects ?? [])
+        .filter((pe) => pe.minLevel <= heroLevel);
+      passiveEffects = [];
+      for (const pe of rawPassives) {
+        const enrichedDesc = await TextEditor.enrichHTML(pe.description, enrichOpts);
+        passiveEffects.push({ ...pe, description: enrichedDesc, isActive: heroicValue >= pe.threshold });
+      }
     }
 
     const hasPassiveEffects = passiveEffects.length > 0;
@@ -344,6 +350,9 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     const totalDamage = highestChar * count;
     const result = await updateSurges(actor, -count);
 
+    // Build a damage enricher string for the chat card
+    const damageEnricher = `[[/damage ${totalDamage}]]`;
+
     await postResourceChat(actor, {
       resourceName: game.i18n.localize("DSRESOURCES.Tabs.Surge"),
       action: game.i18n.localize("DSRESOURCES.Chat.Spent"),
@@ -352,6 +361,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       previous: result.previous,
       current: result.current,
       formula: `${count} × ${highestChar} = ${totalDamage}`,
+      damageEnricher,
     });
   }
 

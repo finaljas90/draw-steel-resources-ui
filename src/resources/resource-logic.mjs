@@ -150,6 +150,7 @@ export async function postResourceChat(actor, opts) {
   const {
     resourceName, action, amount, method,
     previous, current, formula, damageRoll, damageType,
+    damageEnricher,
   } = opts;
 
   const speaker = ChatMessage.getSpeaker({ actor });
@@ -166,6 +167,11 @@ export async function postResourceChat(actor, opts) {
       <div class="dsresources-chat-damage">
         <strong>Damage${damageType ? ` (${damageType})` : ""}:</strong>
         ${rendered}
+      </div>`;
+  } else if (damageEnricher) {
+    damageHtml = `
+      <div class="dsresources-chat-damage">
+        ${damageEnricher}
       </div>`;
   }
 
