@@ -1,11 +1,11 @@
 /* ==========================================================================
    Draw Steel Resource Tracker — Styles
-   Namespaced with .drawsteel-resources-ui / .dsresources-*
+   Namespaced with .draw-steel-resources-ui / .dsresources-*
    ========================================================================== */
 
 /* ── Window chrome ─────────────────────────────────────── */
 
-.drawsteel-resources-ui .window-content {
+.draw-steel-resources-ui .window-content {
   display: flex;
   flex-direction: column;
   padding: 6px 10px 10px;

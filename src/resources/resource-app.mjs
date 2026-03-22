@@ -30,8 +30,8 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
   // ── Static config ──────────────────────────────────────────────────────────
 
   static DEFAULT_OPTIONS = {
-    id: "drawsteel-resources-ui",
-    classes: ["drawsteel-resources-ui"],
+    id: "draw-steel-resources-ui",
+    classes: ["draw-steel-resources-ui"],
     window: {
       title: "DSRESOURCES.WindowTitle",
       resizable: true,
