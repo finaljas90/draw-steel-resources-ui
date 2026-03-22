@@ -1,0 +1,48 @@
+{
+  "DSRESOURCES": {
+    "WindowTitle": "Resource Tracker",
+    "NoCharacter": "No character assigned. Please select a character in Player Configuration.",
+    "NoCharacterGM": "No player characters found. Players need to assign characters in Player Configuration.",
+    "NoClassData": "No resource rules found for this class yet.",
+    "Tabs": {
+      "Surge": "Surge",
+      "HeroToken": "Hero Tokens"
+    },
+    "Section": {
+      "Gain": "Gain",
+      "Spend": "Spend",
+      "Passives": "Passive Effects"
+    },
+    "Table": {
+      "Threshold": "Threshold",
+      "Effect": "Effect"
+    },
+    "Action": {
+      "Reset": "Reset"
+    },
+    "Tooltip": {
+      "Increase": "Increase by 1",
+      "Decrease": "Decrease by 1"
+    },
+    "Chat": {
+      "Gained": "gained",
+      "Spent": "spent",
+      "Reset": "reset",
+      "EncounterEnd": "Encounter ended — resource reset.",
+      "SurgeReset": "Surges reset."
+    },
+    "Surge": {
+      "About": "Surges",
+      "Description": "Surges are a shared party resource. Heroes gain surges through various abilities and events. Spending surges can enhance abilities, add extra damage, or trigger special effects."
+    },
+    "HeroToken": {
+      "ComingSoon": "Hero Token tracking will be available in a future version."
+    },
+    "HeroicResource": "Heroic Resource",
+    "Notify": {
+      "NoResource": "No resource to spend.",
+      "NotEnough": "Not enough resource.",
+      "NoSurges": "No surges to spend."
+    }
+  }
+}

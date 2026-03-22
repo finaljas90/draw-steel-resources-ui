@@ -1,0 +1,43 @@
+{
+  "id": "drawsteel-resources-ui",
+  "title": "Draw Steel - Resource Tracker",
+  "description": "Track and manage Heroic Resources, Surges, and Hero Tokens for Draw Steel heroes.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13.351"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "draw-steel",
+        "type": "system",
+        "compatibility": {
+          "minimum": "0.9.0",
+          "verified": "0.11.1"
+        }
+      }
+    ]
+  },
+  "authors": [
+    {
+      "name": "bitTwiddleNinja",
+      "url": "https://github.com/bruceamoser"
+    }
+  ],
+  "esmodules": [
+    "src/module.mjs"
+  ],
+  "styles": [
+    "styles/resources.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "license": "LICENSE",
+  "flags": {}
+}

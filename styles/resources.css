@@ -1,0 +1,410 @@
+/* ==========================================================================
+   Draw Steel Resource Tracker — Styles
+   Namespaced with .drawsteel-resources-ui / .dsresources-*
+   ========================================================================== */
+
+/* ── Window chrome ─────────────────────────────────────── */
+
+.drawsteel-resources-ui .window-content {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px 10px;
+  overflow: hidden;
+}
+
+/* ── Panel root ────────────────────────────────────────── */
+
+.dsresources-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── No character message ──────────────────────────────── */
+
+.dsresources-no-character {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 100%;
+  color: var(--color-text-secondary, #888);
+  font-size: 14px;
+  text-align: center;
+  padding: 24px;
+}
+
+.dsresources-no-character i {
+  font-size: 36px;
+  opacity: 0.5;
+}
+
+/* ── Tab bar ───────────────────────────────────────────── */
+/* GM character selector bar */
+.dsresources-hero-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 2px 6px;
+  border-bottom: 1px solid var(--color-border-light-2);
+  margin-bottom: 4px;
+}
+
+.dsresources-hero-btn {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 4px;
+  border: 1px solid var(--color-border-light-2);
+  background: var(--color-bg-option);
+  color: var(--color-text-secondary, #aaa);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.12s, color 0.12s;
+}
+
+.dsresources-hero-btn:hover {
+  background: var(--color-bg-btn, #3d6b9e);
+  color: #fff;
+}
+
+.dsresources-hero-btn.active {
+  background: var(--color-bg-btn, #3d6b9e);
+  color: #fff;
+  border-color: transparent;
+}
+.dsresources-tabs {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0;
+  border-bottom: 2px solid var(--color-border-light-2);
+  margin-bottom: 8px;
+}
+
+.dsresources-tab {
+  flex: 1;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  color: var(--color-text-secondary, #888);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.dsresources-tab:hover {
+  color: var(--color-text-primary, #eee);
+}
+
+.dsresources-tab.active {
+  color: var(--color-text-primary, #eee);
+  border-bottom-color: var(--color-bg-btn, #3d6b9e);
+}
+
+.dsresources-tab:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Tab content (scrollable) ──────────────────────────── */
+
+.dsresources-tab-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.dsresources-tab-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Centered resource value ───────────────────────────── */
+
+.dsresources-value-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 12px 0 2px;
+}
+
+.dsresources-value {
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 60px;
+  text-align: center;
+}
+
+.dsresources-adj-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-size: 13px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-light-2);
+  background: var(--color-bg-option);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.dsresources-adj-btn:hover {
+  background: var(--color-bg-btn, #3d6b9e);
+  color: #fff;
+}
+
+.dsresources-value-label {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary, #aaa);
+  margin-bottom: 12px;
+}
+
+/* ── Section titles ────────────────────────────────────── */
+
+.dsresources-section {
+  margin-bottom: 4px;
+}
+
+.dsresources-section-title {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border-light-2);
+  padding-bottom: 4px;
+}
+
+/* ── Gain / Spend entry rows ───────────────────────────── */
+
+.dsresources-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 5px 4px;
+  border-radius: 4px;
+  transition: background 0.12s;
+}
+
+.dsresources-entry:hover {
+  background: var(--color-bg-option);
+}
+
+.dsresources-entry-desc {
+  flex: 1;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.dsresources-entry-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 4px;
+  border: 1px solid var(--color-border-light-2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter 0.12s;
+}
+
+.dsresources-entry-btn:hover {
+  filter: brightness(1.15);
+}
+
+.dsresources-entry-btn--gain {
+  background: #1a6b35;
+  color: #fff;
+  border-color: transparent;
+}
+
+.dsresources-entry-btn--spend {
+  background: #8b1a1a;
+  color: #fff;
+  border-color: transparent;
+}
+
+/* ── Divider ───────────────────────────────────────────── */
+
+.dsresources-divider {
+  border: none;
+  border-top: 1px solid var(--color-border-light-2);
+  margin: 8px 0;
+}
+
+/* ── Passive effects ───────────────────────────────────── */
+
+.dsresources-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 4px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-secondary, #aaa);
+}
+
+.dsresources-toggle-btn:hover {
+  color: var(--color-text-primary, #eee);
+}
+
+.dsresources-passives-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.dsresources-passives-table th,
+.dsresources-passives-table td {
+  padding: 4px 6px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border-light-2);
+}
+
+.dsresources-passives-table th {
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dsresources-passive-threshold {
+  width: 60px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.dsresources-passive-active {
+  background: var(--color-bg-option);
+}
+
+/* ── Generic button ────────────────────────────────────── */
+
+.dsresources-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border-light-2);
+  background: var(--color-bg-option);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dsresources-btn:hover {
+  filter: brightness(1.1);
+}
+
+.dsresources-btn--danger {
+  background: #8b1a1a;
+  color: #fff;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.dsresources-btn--danger:hover {
+  background: #6b1212;
+}
+
+/* ── Footer (reset button) ─────────────────────────────── */
+
+.dsresources-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+  margin-top: 8px;
+  border-top: 1px solid var(--color-border-light-2);
+}
+
+/* ── Empty / hint text ─────────────────────────────────── */
+
+.dsresources-empty {
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-text-secondary, #888);
+  font-style: italic;
+  padding: 16px 0;
+}
+
+.dsresources-hint {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-text-secondary, #aaa);
+  margin: 0;
+}
+
+/* ── Chat card ─────────────────────────────────────────── */
+
+.dsresources-chat-card {
+  border: 1px solid var(--color-border-light-2);
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 13px;
+}
+
+.dsresources-chat-header {
+  margin-bottom: 4px;
+}
+
+.dsresources-chat-method {
+  font-size: 12px;
+  color: var(--color-text-secondary, #aaa);
+  margin-bottom: 4px;
+}
+
+.dsresources-chat-roll {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.dsresources-chat-damage {
+  margin-bottom: 4px;
+}
+
+.dsresources-chat-summary {
+  font-size: 12px;
+  font-weight: 600;
+  border-top: 1px solid var(--color-border-light-2);
+  padding-top: 4px;
+  margin-top: 4px;
+}
+
+/* ── Sidebar toggle button ─────────────────────────────── */
+
+#dsresources-sidebar-btn {
+  cursor: pointer;
+}

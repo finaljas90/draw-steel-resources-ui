@@ -1,0 +1,191 @@
+{{!-- Resource Tracker Panel --}}
+<div class="dsresources-panel">
+
+  {{#if noCharacter}}
+  {{#if isGM}}
+  <div class="dsresources-no-character">
+    <i class="fa-solid fa-user-slash"></i>
+    <p>{{localize "DSRESOURCES.NoCharacterGM"}}</p>
+  </div>
+  {{else}}
+  <div class="dsresources-no-character">
+    <i class="fa-solid fa-user-slash"></i>
+    <p>{{localize "DSRESOURCES.NoCharacter"}}</p>
+  </div>
+  {{/if}}
+  {{else}}
+
+  {{!-- ── GM character selector bar ───────────────────────────────────── --}}
+  {{#if isGM}}
+  <nav class="dsresources-hero-bar">
+    {{#each heroList}}
+    <button type="button"
+      class="dsresources-hero-btn {{#if this.isSelected}}active{{/if}}"
+      data-action="switchCharacter" data-actor-id="{{this.id}}">
+      {{this.name}}
+    </button>
+    {{/each}}
+  </nav>
+  {{/if}}
+
+  {{!-- ── Tab bar ─────────────────────────────────────────────────────── --}}
+  <nav class="dsresources-tabs">
+    <button type="button" class="dsresources-tab {{#if (eq activeTab 'heroic')}}active{{/if}}"
+      data-action="switchTab" data-tab="heroic">
+      {{resourceName}}
+    </button>
+    <button type="button" class="dsresources-tab {{#if (eq activeTab 'surge')}}active{{/if}}"
+      data-action="switchTab" data-tab="surge">
+      {{localize "DSRESOURCES.Tabs.Surge"}}
+    </button>
+    <button type="button" class="dsresources-tab {{#if (eq activeTab 'herotoken')}}active{{/if}}"
+      data-action="switchTab" data-tab="herotoken" disabled>
+      {{localize "DSRESOURCES.Tabs.HeroToken"}}
+    </button>
+  </nav>
+
+  <section class="dsresources-tab-content">
+
+    {{!-- ════════════════════════════════════════════════════════════════
+         HEROIC RESOURCE TAB
+         ════════════════════════════════════════════════════════════════ --}}
+    {{#if (eq activeTab "heroic")}}
+    <div class="dsresources-tab-pane" data-tab="heroic">
+
+      {{!-- Current value display --}}
+      <div class="dsresources-value-display">
+        <button type="button" class="dsresources-adj-btn" data-action="decrementHeroic"
+          title="{{localize 'DSRESOURCES.Tooltip.Decrease'}}">
+          <i class="fa-solid fa-minus"></i>
+        </button>
+        <span class="dsresources-value">{{heroicValue}}</span>
+        <button type="button" class="dsresources-adj-btn" data-action="incrementHeroic"
+          title="{{localize 'DSRESOURCES.Tooltip.Increase'}}">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+      <div class="dsresources-value-label">{{resourceName}}</div>
+
+      {{#if noClassData}}
+      <p class="dsresources-empty">{{localize "DSRESOURCES.NoClassData"}}</p>
+      {{else}}
+
+      {{!-- ── Gain section ────────────────────────────────────────────── --}}
+      <div class="dsresources-section">
+        <h3 class="dsresources-section-title">{{localize "DSRESOURCES.Section.Gain"}}</h3>
+        {{#each gains}}
+        <div class="dsresources-entry">
+          <span class="dsresources-entry-desc">{{this.description}}</span>
+          <button type="button" class="dsresources-entry-btn dsresources-entry-btn--gain"
+            data-action="gainHeroic" data-gain-id="{{this.id}}">
+            {{this.label}}
+          </button>
+        </div>
+        {{/each}}
+      </div>
+
+      <hr class="dsresources-divider" />
+
+      {{!-- ── Spend section ───────────────────────────────────────────── --}}
+      <div class="dsresources-section">
+        <h3 class="dsresources-section-title">{{localize "DSRESOURCES.Section.Spend"}}</h3>
+        {{#each spends}}
+        <div class="dsresources-entry">
+          <span class="dsresources-entry-desc">{{this.description}}</span>
+          <button type="button" class="dsresources-entry-btn dsresources-entry-btn--spend"
+            data-action="spendHeroic" data-spend-id="{{this.id}}">
+            {{this.label}}
+          </button>
+        </div>
+        {{/each}}
+      </div>
+
+      <hr class="dsresources-divider" />
+
+      {{!-- ── Passive effects toggle ──────────────────────────────────── --}}
+      {{#if hasPassiveEffects}}
+      <div class="dsresources-section">
+        <button type="button" class="dsresources-toggle-btn" data-action="togglePassives">
+          <i class="fa-solid {{#if showPassives}}fa-chevron-up{{else}}fa-chevron-down{{/if}}"></i>
+          {{localize "DSRESOURCES.Section.Passives"}}
+        </button>
+        {{#if showPassives}}
+        <table class="dsresources-passives-table">
+          <thead>
+            <tr>
+              <th>{{localize "DSRESOURCES.Table.Threshold"}}</th>
+              <th>{{localize "DSRESOURCES.Table.Effect"}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each passiveEffects}}
+            <tr class="{{#if this.isActive}}dsresources-passive-active{{/if}}">
+              <td class="dsresources-passive-threshold">{{this.threshold}}</td>
+              <td>{{this.description}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        {{/if}}
+      </div>
+      {{/if}}
+
+      {{!-- Reset button --}}
+      <div class="dsresources-footer">
+        <button type="button" class="dsresources-btn dsresources-btn--danger" data-action="resetHeroic">
+          <i class="fa-solid fa-rotate-left"></i>
+          {{localize "DSRESOURCES.Action.Reset"}}
+        </button>
+      </div>
+
+      {{/if}} {{!-- /noClassData --}}
+    </div>
+    {{/if}}
+
+    {{!-- ════════════════════════════════════════════════════════════════
+         SURGE TAB
+         ════════════════════════════════════════════════════════════════ --}}
+    {{#if (eq activeTab "surge")}}
+    <div class="dsresources-tab-pane" data-tab="surge">
+
+      <div class="dsresources-value-display">
+        <button type="button" class="dsresources-adj-btn" data-action="decrementSurge"
+          title="{{localize 'DSRESOURCES.Tooltip.Decrease'}}">
+          <i class="fa-solid fa-minus"></i>
+        </button>
+        <span class="dsresources-value">{{surgeValue}}</span>
+        <button type="button" class="dsresources-adj-btn" data-action="incrementSurge"
+          title="{{localize 'DSRESOURCES.Tooltip.Increase'}}">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+      <div class="dsresources-value-label">{{localize "DSRESOURCES.Tabs.Surge"}}</div>
+
+      <div class="dsresources-section">
+        <h3 class="dsresources-section-title">{{localize "DSRESOURCES.Surge.About"}}</h3>
+        <p class="dsresources-hint">{{localize "DSRESOURCES.Surge.Description"}}</p>
+      </div>
+
+      <div class="dsresources-footer">
+        <button type="button" class="dsresources-btn dsresources-btn--danger" data-action="resetSurge">
+          <i class="fa-solid fa-rotate-left"></i>
+          {{localize "DSRESOURCES.Action.Reset"}}
+        </button>
+      </div>
+
+    </div>
+    {{/if}}
+
+    {{!-- ════════════════════════════════════════════════════════════════
+         HERO TOKEN TAB (placeholder)
+         ════════════════════════════════════════════════════════════════ --}}
+    {{#if (eq activeTab "herotoken")}}
+    <div class="dsresources-tab-pane" data-tab="herotoken">
+      <p class="dsresources-empty">{{localize "DSRESOURCES.HeroToken.ComingSoon"}}</p>
+    </div>
+    {{/if}}
+
+  </section>
+
+  {{/if}} {{!-- /noCharacter --}}
+</div>
