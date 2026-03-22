@@ -35,29 +35,22 @@ Hooks.once("ready", () => {
   log("Ready");
 });
 
-// ── Sidebar button (injected into chat controls) ────────────────────────────
+// ── Scene-control button (token tools bar – Foundry v13 object API) ─────────
 
-Hooks.on("renderChatLog", (_app, html, _data) => {
+Hooks.on("getSceneControlButtons", (controls) => {
   if (!_systemValid) return;
-  const root = html instanceof HTMLElement ? html : html[0];
-  if (!root) return;
-  if (root.querySelector("#dsresources-sidebar-btn")) return;
 
-  const chatForm = root.querySelector("#chat-form") ?? root.querySelector(".chat-control-icon")?.parentElement;
-  const container = chatForm?.parentElement ?? root;
+  // v13: controls is an object keyed by control name, tools is also an object
+  const tokenGroup = controls.tokens ?? controls.token;
+  if (!tokenGroup) return;
 
-  const btn = document.createElement("button");
-  btn.id = "dsresources-sidebar-btn";
-  btn.type = "button";
-  btn.className = "dsresources-sidebar-btn";
-  btn.innerHTML = `<i class="fa-solid fa-bolt"></i> ${game.i18n.localize("DSRESOURCES.SidebarButton")}`;
-  btn.addEventListener("click", () => ResourceApp.toggle());
-
-  if (chatForm) {
-    container.insertBefore(btn, chatForm);
-  } else {
-    container.prepend(btn);
-  }
+  tokenGroup.tools.dsresources = {
+    name: "dsresources",
+    title: game.i18n.localize("DSRESOURCES.SidebarButton"),
+    icon: "fa-solid fa-bolt",
+    button: true,
+    onChange: () => ResourceApp.toggle(),
+  };
 });
 
 // ── Re-render on actor updates ───────────────────────────────────────────────
