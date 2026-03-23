@@ -55,6 +55,10 @@
       "Active": "Active",
       "Inactive": "Inactive"
     },
+    "Fury": {
+      "GrowthSurge": "Growing Ferocity — surge gained"
+    },
+    "GrowthSurge": "surge gained",
     "Notify": {
       "NoResource": "No resource to spend.",
       "NotEnough": "Not enough resource.",

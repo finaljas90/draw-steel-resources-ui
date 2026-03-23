@@ -111,6 +111,26 @@
       <div class="dsresources-section">
         <h3 class="dsresources-section-title">{{localize "DSRESOURCES.Section.Spend"}}</h3>
         {{#each spends}}
+        {{#if this.isGroupHeader}}
+        {{!-- Group header (e.g. Psi Boost) — description only, no button --}}
+        <div class="dsresources-entry dsresources-entry--group-header">
+          <span class="dsresources-entry-desc">{{{this.description}}}</span>
+        </div>
+        {{#each this.children}}
+        <div class="dsresources-entry dsresources-entry--child">
+          <span class="dsresources-entry-desc">{{{this.description}}}</span>
+          <button type="button" class="dsresources-entry-btn dsresources-entry-btn--spend"
+            data-action="spendHeroic" data-spend-id="{{this.id}}">
+            {{this.label}}
+          </button>
+        </div>
+        {{/each}}
+        {{else if this.isDescriptionOnly}}
+        {{!-- Description-only entry (e.g. Manifold Resonance) — no button --}}
+        <div class="dsresources-entry">
+          <span class="dsresources-entry-desc">{{{this.description}}}</span>
+        </div>
+        {{else}}
         <div class="dsresources-entry">
           <span class="dsresources-entry-desc">{{{this.description}}}</span>
           {{#if this.isSpendX}}
@@ -136,10 +156,48 @@
           </button>
           {{/if}}
         </div>
+        {{/if}}
         {{/each}}
       </div>
 
       <hr class="dsresources-divider" />
+
+      {{!-- ── Growth Tables (e.g. Growing Ferocity) ───────────────────── --}}
+      {{#each growthTables}}
+      <div class="dsresources-section">
+        <h3 class="dsresources-section-title">{{this.label}}</h3>
+        {{#if this.description}}
+        <div class="dsresources-growth-description">{{{this.description}}}</div>
+        {{/if}}
+        <table class="dsresources-growth-table">
+          <thead>
+            <tr>
+              <th class="dsresources-growth-threshold">{{localize "DSRESOURCES.Table.Threshold"}}</th>
+              <th>{{localize "DSRESOURCES.Table.Effect"}}</th>
+              <th class="dsresources-growth-action"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each this.rows}}
+            <tr class="{{#if this.isActive}}dsresources-growth-active{{/if}}">
+              <td class="dsresources-growth-threshold">{{this.threshold}}</td>
+              <td class="dsresources-growth-effect">{{{this.description}}}</td>
+              <td class="dsresources-growth-action">
+                {{#if this.showSurgeButton}}
+                <button type="button" class="dsresources-entry-btn dsresources-entry-btn--gain dsresources-growth-surge-btn"
+                  data-action="gainGrowthSurge" data-surge-amount="{{this.surgeButtonAmount}}"
+                  data-table-label="{{../label}}"
+                  title="Gain {{this.surgeButtonAmount}} surge(s)">
+                  +{{this.surgeButtonAmount}}
+                </button>
+                {{/if}}
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      {{/each}}
 
       {{!-- ── Passive effects toggle ──────────────────────────────────── --}}
       {{#if hasPassiveEffects}}

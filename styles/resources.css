@@ -235,7 +235,7 @@
 
 .dsresources-entry {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
   padding: 5px 4px;
   border-radius: 4px;
@@ -613,4 +613,88 @@
   min-width: 24px;
   font-weight: 600;
   font-size: 14px;
+}
+
+/* ── Growing Ferocity / Growth tables ──────────────────── */
+
+.dsresources-growth-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.dsresources-growth-table th,
+.dsresources-growth-table td {
+  padding: 4px 6px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border-light-2);
+}
+
+.dsresources-growth-table th {
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dsresources-growth-threshold {
+  width: 50px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.dsresources-growth-action {
+  width: 50px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.dsresources-growth-active {
+  border-left: 3px solid #4ade80;
+  background: rgba(74, 222, 128, 0.08);
+}
+
+.dsresources-growth-active .dsresources-growth-threshold {
+  color: #4ade80;
+}
+
+.dsresources-growth-surge-btn {
+  font-size: 11px;
+  padding: 3px 12px;
+  min-width: 0;
+  background: var(--color-bg-btn, #3d6b9e);
+  border-color: transparent;
+}
+
+/* ── Growth table description (passive text) ───────────── */
+
+.dsresources-growth-description {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-text-light-highlight, #e8d48b);
+  font-style: italic;
+  padding: 4px 6px 2px;
+}
+
+/* ── Group header / child entries (e.g. Psi Boost) ─────── */
+
+.dsresources-entry--group-header {
+  border-bottom: 1px solid var(--color-border-light-2);
+  padding-bottom: 4px;
+  margin-bottom: 2px;
+}
+
+.dsresources-entry--group-header .dsresources-entry-desc {
+  font-size: 12px;
+}
+
+.dsresources-entry--child {
+  padding-left: 16px;
+}
+
+.dsresources-entry--child .dsresources-entry-desc::before {
+  content: "\2022";
+  margin-right: 6px;
+  color: var(--color-text-light-highlight, #e8d48b);
 }

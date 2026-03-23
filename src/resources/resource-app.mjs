@@ -55,6 +55,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       incrementSurge:   ResourceApp.#incrementSurge,
       decrementSurge:   ResourceApp.#decrementSurge,
       resetSurge:       ResourceApp.#resetSurge,
+      gainGrowthSurge:  ResourceApp.#gainGrowthSurge,
     },
   };
 
@@ -152,6 +153,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     let gains  = [];
     let spends = [];
     let passiveEffects = [];
+    let growthTables = [];
 
     if (classDef) {
       const enrichOpts = { rollData: actor.getRollData(), async: true };
@@ -194,6 +196,12 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
           );
           if (!hasAbility) continue;
         }
+        if (e.requiresSubclass) {
+          const hasSubclass = actor.items.some(
+            (i) => i.name === e.requiresSubclass && i.type === "subclass"
+          );
+          if (!hasSubclass) continue;
+        }
         const enrichedDesc = await TextEditor.enrichHTML(e.description, enrichOpts);
         const isSpendX = e.action === "spendX";
 
@@ -204,10 +212,33 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
           const step = e.spendXStep ?? 1;
           spendXMin = e.cost ?? 1;
           spendXMax = Math.floor(currentResource / step) * step;
+          if (e.spendXHardMax) spendXMax = Math.min(spendXMax, e.spendXHardMax);
           if (spendXMax < spendXMin) spendXMax = spendXMin;
           const raw = this._spendXValues[e.id] ?? spendXMin;
           spendXValue = Math.max(spendXMin, Math.min(spendXMax, raw));
           this._spendXValues[e.id] = spendXValue;
+        }
+
+        // Process children for group headers (e.g. Psi Boost)
+        let processedChildren;
+        if (e.isGroupHeader && e.children?.length) {
+          processedChildren = [];
+          for (const child of e.children) {
+            if (child.minLevel > heroLevel) continue;
+            if (child.requiresSubclass) {
+              const hasSub = actor.items.some(
+                (i) => i.name === child.requiresSubclass && i.type === "subclass"
+              );
+              if (!hasSub) continue;
+            }
+            const childDesc = await TextEditor.enrichHTML(child.description, enrichOpts);
+            processedChildren.push({
+              ...child,
+              description: childDesc,
+              label: spendLabel(child),
+              isSpendX: false,
+            });
+          }
         }
 
         spends.push({
@@ -220,6 +251,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
           spendXValue,
           spendXMin,
           spendXMax,
+          children: processedChildren,
         });
       }
       const rawPassives = (classDef.passiveEffects ?? [])
@@ -228,6 +260,53 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       for (const pe of rawPassives) {
         const enrichedDesc = await TextEditor.enrichHTML(pe.description, enrichOpts);
         passiveEffects.push({ ...pe, description: enrichedDesc, isActive: heroicValue >= pe.threshold });
+      }
+
+      // Process growth tables (Fury Growing Ferocity, etc.)
+      if (classDef.growthTables?.length) {
+        for (const table of classDef.growthTables) {
+          if (table.requiresSubclass && !actor.items.some(
+            (i) => i.name === table.requiresSubclass && i.type === "subclass"
+          )) continue;
+          if (table.requiresKit && !actor.items.some(
+            (i) => i.name === table.requiresKit && i.type === "kit"
+          )) continue;
+
+          const eligibleRows = table.rows.filter((r) => r.minLevel <= heroLevel);
+          const processedRows = [];
+          for (const row of eligibleRows) {
+            const enrichedRowDesc = await TextEditor.enrichHTML(row.description, enrichOpts);
+            processedRows.push({
+              ...row,
+              description: enrichedRowDesc,
+              isActive: heroicValue >= row.threshold,
+            });
+          }
+
+          // Within each surgeGroup, only the highest-threshold active row shows its button
+          const activeGroupMax = {};
+          for (const row of processedRows) {
+            if (row.isActive && row.grantsSurge && row.surgeGroup) {
+              if (!activeGroupMax[row.surgeGroup] || row.threshold > activeGroupMax[row.surgeGroup]) {
+                activeGroupMax[row.surgeGroup] = row.threshold;
+              }
+            }
+          }
+          for (const row of processedRows) {
+            row.showSurgeButton = row.isActive
+              && row.grantsSurge > 0
+              && (!row.surgeGroup || activeGroupMax[row.surgeGroup] === row.threshold);
+            row.surgeButtonAmount = row.grantsSurge ?? 0;
+          }
+
+          // Enrich optional table description (e.g. Inertial Shield passive)
+          let tableDescription;
+          if (table.description) {
+            tableDescription = await TextEditor.enrichHTML(table.description, enrichOpts);
+          }
+
+          growthTables.push({ id: table.id, label: table.label, description: tableDescription, rows: processedRows });
+        }
       }
     }
 
@@ -267,6 +346,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       passiveEffects,
       noClassData,
       mantleIndicator,
+      growthTables,
       className: classDef?.className ?? classItem?.name ?? "",
     };
   }
@@ -389,7 +469,16 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
 
     const heroLevel = getHeroLevel(actor);
     const entries = resolveEntries(classDef.spends, heroLevel);
-    const entry = entries.find((e) => e.id === spendId);
+    let entry = entries.find((e) => e.id === spendId);
+    // Search within children of group headers (e.g. Psi Boost children)
+    if (!entry) {
+      for (const e of entries) {
+        if (e.children) {
+          entry = e.children.find((c) => c.id === spendId);
+          if (entry) break;
+        }
+      }
+    }
     if (!entry) return;
 
     const current = actor.system.hero?.primary?.value ?? 0;
@@ -401,6 +490,11 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     const resourceName = getClassItem(actor)?.system?.primary ?? "Resource";
     const result = await updateHeroicResource(actor, -entry.cost);
 
+    // Handle optional surge grant on spend (e.g. Primordial Strike)
+    if (entry.grantsSurge) {
+      await updateSurges(actor, entry.grantsSurge);
+    }
+
     // Handle optional damage roll on spend
     let damageRoll = null;
     let damageType = null;
@@ -410,11 +504,15 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       damageType = entry.damage.type ?? null;
     }
 
+    const method = entry.grantsSurge
+      ? `${entry.description}<br><em>Gained ${entry.grantsSurge} surge${entry.grantsSurge > 1 ? "s" : ""}.</em>`
+      : entry.description;
+
     await postResourceChat(actor, {
       resourceName,
       action: game.i18n.localize("DSRESOURCES.Chat.Spent"),
       amount: entry.cost,
-      method: entry.description,
+      method,
       previous: result.previous,
       current: result.current,
       damageRoll,
@@ -536,7 +634,8 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     const currentResource = actor.system.hero?.primary?.value ?? 0;
     const step = entry.spendXStep ?? 1;
     const minSpend = entry.cost ?? 1;
-    const maxSpend = Math.max(minSpend, Math.floor(currentResource / step) * step);
+    let maxSpend = Math.max(minSpend, Math.floor(currentResource / step) * step);
+    if (entry.spendXHardMax) maxSpend = Math.min(maxSpend, entry.spendXHardMax);
 
     const current = this._spendXValues[spendId] ?? minSpend;
     this._spendXValues[spendId] = Math.max(minSpend, Math.min(maxSpend, current + direction * step));
@@ -569,13 +668,20 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     const title = entry.spendXTitle ?? game.i18n.localize("DSRESOURCES.Section.Spend");
     const result = await updateHeroicResource(actor, -spendAmount);
 
+    // Handle optional surge grant per spend (e.g. Chaos Incarnate)
+    if (entry.grantsSurgePerSpend) {
+      await updateSurges(actor, spendAmount);
+    }
+
     // Reset the inline value after spending
     delete this._spendXValues[spendId];
 
-    // Build chat content with optional detail (e.g. Healing Grace enhancement list)
+    // Build chat content with optional detail
     let detailHtml = "";
     if (entry.spendXDetail) {
       let detailText = entry.spendXDetail;
+      // Generic placeholder
+      detailText = detailText.replace("{spendAmount}", spendAmount);
       // Substitute Practical Magic placeholders with computed values
       if (entry.id === "spend-practical-magic") {
         const reason = actor.system.characteristics?.reason?.value ?? 0;
@@ -714,6 +820,24 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       method: game.i18n.localize("DSRESOURCES.Chat.SurgeReset"),
       previous: prev,
       current: 0,
+    });
+  }
+
+  // ── Actions: Growth table surge buttons ───────────────────────────────────
+
+  static async #gainGrowthSurge(_event, target) {
+    const actor = this.#getActiveActor();
+    if (!actor) return;
+    const count = Number(target.dataset.surgeAmount) || 1;
+    const tableLabel = target.dataset.tableLabel || game.i18n.localize("DSRESOURCES.GrowthSurge");
+    const result = await updateSurges(actor, count);
+    await postResourceChat(actor, {
+      resourceName: game.i18n.localize("DSRESOURCES.Tabs.Surge"),
+      action: game.i18n.localize("DSRESOURCES.Chat.Gained"),
+      amount: count,
+      method: `${tableLabel} — ${game.i18n.localize("DSRESOURCES.GrowthSurge")}`,
+      previous: result.previous,
+      current: result.current,
     });
   }
 }
