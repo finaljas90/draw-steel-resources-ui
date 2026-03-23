@@ -36,6 +36,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     window: {
       title: "DSRESOURCES.WindowTitle",
       resizable: true,
+      minimizable: true,
     },
     position: { width: 420, height: 650 },
     actions: {
@@ -56,6 +57,8 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       decrementSurge:   ResourceApp.#decrementSurge,
       resetSurge:       ResourceApp.#resetSurge,
       gainGrowthSurge:  ResourceApp.#gainGrowthSurge,
+      incrementToken:   ResourceApp.#incrementToken,
+      decrementToken:   ResourceApp.#decrementToken,
     },
   };
 
@@ -111,6 +114,34 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     const first = heroes[0] ?? null;
     if (first) this._selectedActorId = first.id;
     return first;
+  }
+
+  /**
+   * Attempt to read the shared hero token pool from the Draw Steel system.
+   * Returns { available: true, value: Number } or { available: false }.
+   */
+  #getHeroTokens() {
+    const asNum = (v) => { const n = Number(v); return Number.isFinite(n) ? n : null; };
+    try {
+      // Draw Steel system exposes hero tokens via the ds namespace
+      if (typeof ds !== "undefined") {
+        // ds.game.heroTokens (CombatTracker-level shared pool)
+        const v1 = asNum(ds.game?.heroTokens);
+        if (v1 !== null) return { available: true, value: v1 };
+        const v2 = asNum(ds.heroTokens);
+        if (v2 !== null) return { available: true, value: v2 };
+      }
+      // Try game-level setting
+      const val = asNum(game.settings.get("draw-steel", "heroTokens"));
+      if (val !== null) return { available: true, value: val };
+    } catch { /* setting not registered — expected */ }
+    try {
+      // Some systems store it under the active combat
+      const combat = game.combat;
+      const v = asNum(combat?.system?.heroTokens);
+      if (v !== null) return { available: true, value: v };
+    } catch { /* no active combat */ }
+    return { available: false };
   }
 
   // ── Context ────────────────────────────────────────────────────────────────
@@ -329,6 +360,9 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       }
     }
 
+    // Hero token pool (shared party resource)
+    const tokenInfo = this.#getHeroTokens();
+
     return {
       noCharacter: false,
       isGM,
@@ -338,6 +372,8 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       resourceName,
       heroicValue,
       surgeValue,
+      heroTokenAvailable: tokenInfo.available,
+      heroTokenValue: tokenInfo.available ? tokenInfo.value : 0,
       highestChar,
       gains,
       spends,
@@ -839,5 +875,39 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       previous: result.previous,
       current: result.current,
     });
+  }
+
+  // ── Actions: hero tokens (GM only) ────────────────────────────────────────
+
+  static async #incrementToken(_event, _target) {
+    if (!game.user.isGM) return;
+    const tokenInfo = this.#getHeroTokens();
+    if (!tokenInfo.available) return;
+    try {
+      if (typeof ds !== "undefined" && ds.heroTokens != null) {
+        ds.heroTokens = tokenInfo.value + 1;
+      } else if (game.combat?.system?.heroTokens != null) {
+        await game.combat.update({ "system.heroTokens": tokenInfo.value + 1 });
+      } else {
+        await game.settings.set("draw-steel", "heroTokens", tokenInfo.value + 1);
+      }
+    } catch { /* unable to update hero tokens */ }
+    this.render(false);
+  }
+
+  static async #decrementToken(_event, _target) {
+    if (!game.user.isGM) return;
+    const tokenInfo = this.#getHeroTokens();
+    if (!tokenInfo.available || tokenInfo.value <= 0) return;
+    try {
+      if (typeof ds !== "undefined" && ds.heroTokens != null) {
+        ds.heroTokens = tokenInfo.value - 1;
+      } else if (game.combat?.system?.heroTokens != null) {
+        await game.combat.update({ "system.heroTokens": tokenInfo.value - 1 });
+      } else {
+        await game.settings.set("draw-steel", "heroTokens", tokenInfo.value - 1);
+      }
+    } catch { /* unable to update hero tokens */ }
+    this.render(false);
   }
 }

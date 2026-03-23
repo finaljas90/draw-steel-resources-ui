@@ -5,11 +5,16 @@
 
 /* ── Window chrome ─────────────────────────────────────── */
 
+.draw-steel-resources-ui {
+  min-width: 320px;
+}
+
 .draw-steel-resources-ui .window-content {
   display: flex;
   flex-direction: column;
   padding: 6px 10px 10px;
   overflow: hidden;
+  min-width: 300px;
 }
 
 /* ── Panel root ────────────────────────────────────────── */
@@ -19,6 +24,7 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  min-width: 300px;
 }
 
 /* ── No character message ──────────────────────────────── */
@@ -38,6 +44,36 @@
 
 .dsresources-no-character i {
   font-size: 36px;
+  opacity: 0.5;
+}
+
+/* ── Persistent values row (above tabs) ────────────────── */
+
+.dsresources-values-row {
+  flex-shrink: 0;
+}
+
+.dsresources-values-columns {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+.dsresources-value-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 4px 2px;
+}
+
+.dsresources-value-divider {
+  width: 2px;
+  align-self: stretch;
+  background: var(--color-text-secondary, #888);
+  margin: 4px 0;
+  flex-shrink: 0;
   opacity: 0.5;
 }
 
@@ -83,23 +119,22 @@
 .dsresources-tabs {
   display: flex;
   flex-shrink: 0;
-  gap: 0;
-  border-bottom: 2px solid var(--color-border-light-2);
-  margin-bottom: 8px;
+  gap: 4px;
+  margin-bottom: 0;
   padding: 0 4px;
 }
 
 .dsresources-tab {
   flex: 1;
-  padding: 6px 8px;
+  padding: 4px 8px;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
+  text-align: center;
   letter-spacing: 0.04em;
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
   cursor: pointer;
   color: var(--color-text-secondary, #888);
   transition: color 0.15s, border-color 0.15s;
@@ -119,13 +154,20 @@
   cursor: not-allowed;
 }
 
+.dsresources-tab-divider {
+  border: none;
+  border-top: 1px solid var(--color-border-light-2);
+  margin: 8px 0 0 0;
+  flex-shrink: 0;
+}
+
 /* ── Tab content (scrollable) ──────────────────────────── */
 
 .dsresources-tab-content {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-right: 4px;
+  padding: 8px 4px 0 0;
 }
 
 .dsresources-tab-pane {
@@ -148,15 +190,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  padding: 12px 0 2px;
+  gap: 10px;
+  padding: 4px 0 2px;
 }
 
 .dsresources-value {
-  font-size: 42px;
+  font-size: 32px;
   font-weight: 700;
   line-height: 1;
-  min-width: 60px;
+  min-width: 40px;
   text-align: center;
 }
 
@@ -164,9 +206,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  font-size: 13px;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
   border-radius: 50%;
   border: 1px solid var(--color-border-light-2);
   background: var(--color-bg-option);
@@ -181,7 +223,7 @@
 
 .dsresources-value-label {
   text-align: center;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;

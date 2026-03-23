@@ -28,33 +28,13 @@
   </nav>
   {{/if}}
 
-  {{!-- ── Tab bar ─────────────────────────────────────────────────────── --}}
-  <nav class="dsresources-tabs">
-    <button type="button" class="dsresources-tab {{#if (eq activeTab 'heroic')}}active{{/if}}"
-      data-action="switchTab" data-tab="heroic">
-      {{resourceName}}
-    </button>
-    <button type="button" class="dsresources-tab {{#if (eq activeTab 'surge')}}active{{/if}}"
-      data-action="switchTab" data-tab="surge">
-      {{localize "DSRESOURCES.Tabs.Surge"}}
-    </button>
-    <button type="button" class="dsresources-tab {{#if (eq activeTab 'herotoken')}}active{{/if}}"
-      data-action="switchTab" data-tab="herotoken" disabled>
-      {{localize "DSRESOURCES.Tabs.HeroToken"}}
-    </button>
-  </nav>
+  {{!-- ── Persistent values row (always visible) ────────────────────── --}}
+  <div class="dsresources-values-row">
+    <hr class="dsresources-divider" />
+    <div class="dsresources-values-columns">
 
-  <section class="dsresources-tab-content">
-
-    {{!-- ════════════════════════════════════════════════════════════════
-         HEROIC RESOURCE TAB
-         ════════════════════════════════════════════════════════════════ --}}
-    {{#if (eq activeTab "heroic")}}
-    <div class="dsresources-tab-pane" data-tab="heroic">
-
-      {{!-- Current value display (sticky) --}}
-      <div class="dsresources-sticky-header">
-        <hr class="dsresources-divider" />
+      {{!-- Heroic Resource column --}}
+      <div class="dsresources-value-col">
         <div class="dsresources-value-display">
           <button type="button" class="dsresources-adj-btn" data-action="decrementHeroic"
             title="{{localize 'DSRESOURCES.Tooltip.Decrease'}}">
@@ -66,19 +46,84 @@
             <i class="fa-solid fa-plus"></i>
           </button>
         </div>
-        <div class="dsresources-value-label">{{resourceName}}</div>
-        {{#if mantleIndicator}}
-        <div class="dsresources-mantle-indicator">
-          <span class="dsresources-mantle-label">{{mantleIndicator.label}}:</span>
-          {{#if mantleIndicator.isActive}}
-          <span class="dsresources-mantle-status dsresources-mantle-active">{{localize "DSRESOURCES.Mantle.Active"}}</span>
-          {{else}}
-          <span class="dsresources-mantle-status dsresources-mantle-inactive">{{localize "DSRESOURCES.Mantle.Inactive"}}</span>
+      </div>
+
+      <div class="dsresources-value-divider"></div>
+
+      {{!-- Surge column --}}
+      <div class="dsresources-value-col">
+        <div class="dsresources-value-display">
+          <button type="button" class="dsresources-adj-btn" data-action="decrementSurge"
+            title="{{localize 'DSRESOURCES.Tooltip.Decrease'}}">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+          <span class="dsresources-value">{{surgeValue}}</span>
+          <button type="button" class="dsresources-adj-btn" data-action="incrementSurge"
+            title="{{localize 'DSRESOURCES.Tooltip.Increase'}}">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      {{#if heroTokenAvailable}}
+      <div class="dsresources-value-divider"></div>
+
+      {{!-- Hero Token column --}}
+      <div class="dsresources-value-col">
+        <div class="dsresources-value-display">
+          {{#if isGM}}
+          <button type="button" class="dsresources-adj-btn" data-action="decrementToken"
+            title="{{localize 'DSRESOURCES.Tooltip.Decrease'}}">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+          {{/if}}
+          <span class="dsresources-value">{{heroTokenValue}}</span>
+          {{#if isGM}}
+          <button type="button" class="dsresources-adj-btn" data-action="incrementToken"
+            title="{{localize 'DSRESOURCES.Tooltip.Increase'}}">
+            <i class="fa-solid fa-plus"></i>
+          </button>
           {{/if}}
         </div>
-        {{/if}}
-        <hr class="dsresources-divider" />
+        <div class="dsresources-value-label">{{localize "DSRESOURCES.Tabs.HeroToken"}}</div>
       </div>
+      {{/if}}
+
+    </div>
+
+    {{#if mantleIndicator}}
+    <div class="dsresources-mantle-indicator">
+      <span class="dsresources-mantle-label">{{mantleIndicator.label}}:</span>
+      {{#if mantleIndicator.isActive}}
+      <span class="dsresources-mantle-status dsresources-mantle-active">{{localize "DSRESOURCES.Mantle.Active"}}</span>
+      {{else}}
+      <span class="dsresources-mantle-status dsresources-mantle-inactive">{{localize "DSRESOURCES.Mantle.Inactive"}}</span>
+      {{/if}}
+    </div>
+    {{/if}}
+
+  </div>
+
+  {{!-- ── Tab bar ─────────────────────────────────────────────────────── --}}
+  <nav class="dsresources-tabs">
+    <button type="button" class="dsresources-tab {{#if (eq activeTab 'heroic')}}active{{/if}}"
+      data-action="switchTab" data-tab="heroic">
+      {{resourceName}}
+    </button>
+    <button type="button" class="dsresources-tab {{#if (eq activeTab 'surge')}}active{{/if}}"
+      data-action="switchTab" data-tab="surge">
+      {{localize "DSRESOURCES.Tabs.Surge"}}
+    </button>
+  </nav>
+  <hr class="dsresources-tab-divider">
+
+  <section class="dsresources-tab-content">
+
+    {{!-- ════════════════════════════════════════════════════════════════
+         HEROIC RESOURCE TAB
+         ════════════════════════════════════════════════════════════════ --}}
+    {{#if (eq activeTab "heroic")}}
+    <div class="dsresources-tab-pane" data-tab="heroic">
 
       {{#if noClassData}}
       <p class="dsresources-empty">{{localize "DSRESOURCES.NoClassData"}}</p>
@@ -245,23 +290,6 @@
     {{#if (eq activeTab "surge")}}
     <div class="dsresources-tab-pane" data-tab="surge">
 
-      <div class="dsresources-sticky-header">
-        <hr class="dsresources-divider" />
-        <div class="dsresources-value-display">
-          <button type="button" class="dsresources-adj-btn" data-action="decrementSurge"
-            title="{{localize 'DSRESOURCES.Tooltip.Decrease'}}">
-            <i class="fa-solid fa-minus"></i>
-          </button>
-          <span class="dsresources-value">{{surgeValue}}</span>
-          <button type="button" class="dsresources-adj-btn" data-action="incrementSurge"
-            title="{{localize 'DSRESOURCES.Tooltip.Increase'}}">
-            <i class="fa-solid fa-plus"></i>
-          </button>
-        </div>
-        <div class="dsresources-value-label">{{localize "DSRESOURCES.Tabs.Surge"}}</div>
-        <hr class="dsresources-divider" />
-      </div>
-
       {{!-- ── Surge Spend: Extra Damage ───────────────────────────────── --}}
       <div class="dsresources-section">
         <h3 class="dsresources-section-title">{{localize "DSRESOURCES.Section.Spend"}}</h3>
@@ -298,15 +326,6 @@
         </button>
       </div>
 
-    </div>
-    {{/if}}
-
-    {{!-- ════════════════════════════════════════════════════════════════
-         HERO TOKEN TAB (placeholder)
-         ════════════════════════════════════════════════════════════════ --}}
-    {{#if (eq activeTab "herotoken")}}
-    <div class="dsresources-tab-pane" data-tab="herotoken">
-      <p class="dsresources-empty">{{localize "DSRESOURCES.HeroToken.ComingSoon"}}</p>
     </div>
     {{/if}}
 
