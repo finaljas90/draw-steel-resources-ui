@@ -759,7 +759,155 @@ const NULL = {
   passiveEffects: [],
 };
 const SHADOW    = { id: "shadow",       className: "Shadow",       resourceName: "Insight",     gains: [], spends: [], passiveEffects: [] };
-const TACTICIAN = { id: "tactician",    className: "Tactician",    resourceName: "Focus",       gains: [], spends: [], passiveEffects: [] };
+const TACTICIAN = {
+  id: "tactician",
+  className: "Tactician",
+  resourceName: "Focus",
+
+  gains: [
+    {
+      id: "combat-start",
+      description: "At the start of a combat encounter, you gain focus equal to your Victories.",
+      amount: "victories",
+      minLevel: 1,
+    },
+    {
+      id: "turn-start",
+      description: "At the start of each of your turns during combat, you gain 2 focus.",
+      amount: 2,
+      minLevel: 1,
+    },
+    {
+      id: "turn-start-lv7",
+      description: "At the start of each of your turns during combat, you gain 3 focus. (Heightened Focus)",
+      amount: 3,
+      minLevel: 7,
+      replaces: "turn-start",
+    },
+    {
+      id: "turn-start-lv10",
+      description: "At the start of each of your turns during combat, you gain 4 focus. (True Focus)",
+      amount: 4,
+      minLevel: 10,
+      replaces: "turn-start-lv7",
+    },
+    {
+      id: "mark-damage-trigger",
+      description: "The first time each combat round that you or any ally damages a creature marked by you, you gain 1 focus.",
+      amount: 1,
+      minLevel: 1,
+    },
+    {
+      id: "mark-damage-trigger-lv4",
+      description: "The first time each combat round that you or any ally damages a target marked by you, you gain 2 focus. (Focus on Their Weaknesses)",
+      amount: 2,
+      minLevel: 4,
+      replaces: "mark-damage-trigger",
+    },
+    {
+      id: "ally-heroic-trigger",
+      description: "The first time each combat round that any ally within 10 squares of you uses a heroic ability, you gain 1 focus.",
+      amount: 1,
+      minLevel: 1,
+    },
+  ],
+
+  spends: [
+    // Mark — base triggered action
+    {
+      id: "spend-mark",
+      description: "<strong>Mark</strong> (free triggered action — when you or any ally deals rolled damage to a creature marked by you): Spend 1 focus for one benefit (one per trigger):<ul><li>The ability deals extra damage equal to twice your Reason score ([[@characteristics.reason.value]] × 2).</li><li>The creature dealing the damage can spend a Recovery.</li><li>The creature dealing the damage can shift up to [[@characteristics.reason.value]] squares.</li></ul>",
+      cost: 1,
+      minLevel: 1,
+    },
+    // Strike Now!
+    {
+      id: "spend-strike-now",
+      description: "<strong>Strike Now!</strong> — You target two allies instead of one with Strike Now!",
+      cost: 5,
+      minLevel: 1,
+      requiresAbility: "Strike Now!",
+    },
+    // Doctrine Triggered Actions (filtered by subclass)
+    {
+      id: "spend-advanced-tactics",
+      description: "<strong>Advanced Tactics</strong> (Insurgent)<br><em>Trigger: An ally within 10 deals damage to another creature.</em><br>Effect: The target gains [[/gain 2 surge]], which they can use on the triggering damage.<br><strong>Spend 1 Focus:</strong> If the damage has any potency effect associated with it, the potency is increased by 1.",
+      cost: 1,
+      minLevel: 1,
+      requiresSubclass: "Insurgent",
+    },
+    {
+      id: "spend-overwatch",
+      description: "<strong>Overwatch</strong> (Mastermind)<br><em>Trigger: A creature within 10 moves.</em><br>Effect: At any time during the target's movement, one ally can make a free strike against them.<br><strong>Spend 1 Focus:</strong> If the target has R < AVERAGE, they are slowed (EoT).",
+      cost: 1,
+      minLevel: 1,
+      requiresSubclass: "Mastermind",
+    },
+    {
+      id: "spend-parry",
+      description: "<strong>Parry</strong> (Vanguard)<br><em>Trigger: A creature deals damage to you or one ally within 2.</em><br>Effect: You can shift 1 square. If the target is you, or if you end this shift adjacent to the target, the target takes half the damage. If the damage has any potency effect, the potency is decreased by 1.<br><strong>Spend 1 Focus:</strong> This ability's distance becomes Melee 1 + [[@characteristics.reason.value]], and you can shift up to [[@characteristics.reason.value]] squares instead of 1.",
+      cost: 1,
+      minLevel: 1,
+      requiresSubclass: "Vanguard",
+    },
+    // Level 2 Mark Benefits — Doctrine
+    {
+      id: "spend-melee-superiority",
+      description: "<strong>Melee Superiority</strong> (Vanguard — Mark Benefit): When a creature marked by you attempts to move or shift within distance of your melee free strike, make a melee free strike against that creature.",
+      cost: 2,
+      minLevel: 2,
+      requiresSubclass: "Vanguard",
+    },
+    {
+      id: "spend-fog-of-war",
+      description: "<strong>Fog of War</strong> (Insurgent — Mark Benefit): Until the end of the encounter, whenever you or any ally makes a strike against a creature marked by you, force that target to make a free strike against a creature of your choice within 5 squares of them.",
+      cost: 2,
+      minLevel: 2,
+      requiresSubclass: "Insurgent",
+    },
+    {
+      id: "spend-targets-of-opportunity",
+      description: "<strong>Targets of Opportunity</strong> (Mastermind — Mark Benefit): Until the end of the encounter, whenever you or any ally makes a strike against a creature marked by you, add one additional target to the strike.",
+      cost: 2,
+      minLevel: 2,
+      requiresSubclass: "Mastermind",
+    },
+    // Level 8 Mark Benefits — Doctrine
+    {
+      id: "spend-bait-and-ambush",
+      description: "<strong>Bait and Ambush</strong> (Insurgent — Mark Benefit): When you or any ally makes a strike against a creature marked by you, the character making the strike can shift up to [[@characteristics.reason.value]] squares and use the Hide maneuver as a free maneuver once during the shift. The creature can shift before or after the strike is resolved.",
+      cost: 2,
+      minLevel: 8,
+      requiresSubclass: "Insurgent",
+      replaces: "spend-fog-of-war",
+    },
+    {
+      id: "spend-pincer-movement",
+      description: "<strong>Pincer Movement</strong> (Mastermind — Mark Benefit): When you or any ally makes a strike against a creature marked by you, the character making the strike can shift up to [[@characteristics.reason.value]] squares before the strike is resolved. If you didn't make the strike, you can also make this shift. If you did make the strike, one ally within 10 squares of you can make this shift instead.",
+      cost: 2,
+      minLevel: 8,
+      requiresSubclass: "Mastermind",
+      replaces: "spend-targets-of-opportunity",
+    },
+    {
+      id: "spend-see-your-enemies",
+      description: "<strong>See Your Enemies Driven Before You</strong> (Vanguard — Mark Benefit): When you or any ally makes a melee strike against a creature marked by you, the character making the strike pushes the target up to [[@characteristics.reason.value]] squares, then shifts up to [[@characteristics.reason.value]] squares, ending adjacent to the target.",
+      cost: 2,
+      minLevel: 8,
+      requiresSubclass: "Vanguard",
+      replaces: "spend-melee-superiority",
+    },
+    // Level 10 — Command (Epic Resource)
+    {
+      id: "spend-command",
+      description: "<strong>Command</strong> (Epic Resource): You can spend command on your abilities as if it were focus.<ul><li><strong>Spend 1 Command:</strong> Whenever you or any ally uses an ability to deal rolled damage to a creature marked by you, increase the power roll outcome for that target by one tier (free triggered action).</li><li><strong>Spend 1 Command:</strong> Whenever an enemy marked by you makes an ability roll, decrease the power roll outcome by one tier (free triggered action).</li></ul>Command remains until you spend it.",
+      minLevel: 10,
+      isDescriptionOnly: true,
+    },
+  ],
+
+  passiveEffects: [],
+};
 const TALENT    = { id: "talent",       className: "Talent",       resourceName: "Clarity",     gains: [], spends: [], passiveEffects: [] };
 const TROUBADOUR = { id: "troubadour",  className: "Troubadour",   resourceName: "Drama",       gains: [], spends: [], passiveEffects: [] };
 
