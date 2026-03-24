@@ -333,7 +333,7 @@ const ELEMENTALIST = {
     },
     {
       id: "spend-explosive-assistance",
-      description: "Triggered Action — <strong>Explosive Assistance</strong> (Fire): The forced movement bonus becomes twice your Reason score ([[@characteristics.reason.value]]) instead of equal to it.",
+      description: "Triggered Action — <strong>Explosive Assistance</strong> (Fire): The forced movement bonus becomes twice your Reason score ([[2 * @characteristics.reason.value]]) instead of equal to it.",
       cost: 1,
       minLevel: 1,
       requiresAbility: "Explosive Assistance",
@@ -357,27 +357,27 @@ const ELEMENTALIST = {
     },
     {
       id: "spend-subtle-relocation",
-      description: "Triggered Action — <strong>Subtle Relocation</strong> (Void): Teleport the target up to twice your Reason score ([[@characteristics.reason.value]]) instead.",
+      description: "Triggered Action — <strong>Subtle Relocation</strong> (Void): Teleport the target up to twice your Reason score ([[2 * @characteristics.reason.value]]) instead.",
       cost: 1,
       minLevel: 1,
       requiresAbility: "Subtle Relocation",
     },
-    {
-      id: "spend-breath-conversion",
-      description: "<strong>Breath Conversion</strong> (no action required): Spend Breath — each 1 Breath becomes [[/gain 3 heroic]].",
-      cost: 1,
-      minLevel: 10,
-      action: "spendX",
-      spendXTitle: "Breath → Essence",
-    },
   ],
 
-  // Mantle of Essence indicator config
-  mantleIndicator: {
-    abilityName: "Mantle of Essence",
+  // Mantle of Essence — class feature shown above Gains
+  classFeature: {
+    type: "mantle",
+    label: "Mantle of Essence",
     minLevel: 4,
-    essenceThreshold: 3,
+    threshold: 3,
     noThresholdLevel: 7, // at lv7+, no essence requirement (Mantle of Quintessence)
+    activeColor: "green",
+    subclassDescriptions: {
+      "Quaking Earth": "While you have 3 or more essence and are not dying, you exude an aura of magic whose distance is equal to your Reason score ([[@characteristics.reason.value]]). At the end of each of your turns, you can push each enemy in the area up to [[@characteristics.reason.value]] squares. You can activate and deactivate the aura at will (no action required).",
+      "Burning Grounds": "While you have 3 or more essence and are not dying, you exude an aura of magic whose distance is equal to your Reason score ([[@characteristics.reason.value]]). At the end of each of your turns, each enemy in the area takes [[/damage @characteristics.reason.value type=fire]]. You can activate and deactivate the aura at will (no action required).",
+      "Flowering Bed": "While you have 3 or more essence and are not dying, you exude an aura of magic whose distance is equal to your Reason score ([[@characteristics.reason.value]]). At the end of each of your turns, each ally in the area gains temporary Stamina equal to your Reason score ([[@characteristics.reason.value]]). You can activate and deactivate the aura at will (no action required).",
+      "Veiling Bed": "While you have 3 or more essence and are not dying, you exude an aura of magic whose distance is equal to your Reason score ([[@characteristics.reason.value]]). The area provides concealment for you and your allies. You can activate and deactivate the aura at will (no action required).",
+    },
   },
 
   passiveEffects: [],
@@ -442,7 +442,7 @@ const FURY = {
     // Aspect Triggered Actions (filtered by subclass)
     {
       id: "spend-lines-of-force",
-      description: "<strong>Lines of Force</strong> (Berserker)<br><em>Trigger: You or one creature within melee 1 would be force moved.</em><br>Effect: You select a new target of the same size or smaller within distance to be force moved instead. You become the source of the forced movement, determine the new target's destination, and can push the target. The forced movement distance gains a bonus equal to your Might score ([[@characteristics.might.value]]).<br><strong>Spend 1 Ferocity:</strong> The forced movement distance gains a bonus equal to twice your Might score ([[@characteristics.might.value]]) instead.",
+      description: "<strong>Lines of Force</strong> (Berserker)<br><em>Trigger: You or one creature within melee 1 would be force moved.</em><br>Effect: You select a new target of the same size or smaller within distance to be force moved instead. You become the source of the forced movement, determine the new target's destination, and can push the target. The forced movement distance gains a bonus equal to your Might score ([[@characteristics.might.value]]).<br><strong>Spend 1 Ferocity:</strong> The forced movement distance gains a bonus equal to twice your Might score ([[2 * @characteristics.might.value]]) instead.",
       cost: 1,
       minLevel: 1,
       requiresSubclass: "Berserker",
@@ -475,19 +475,6 @@ const FURY = {
       cost: 1,
       minLevel: 4,
       grantsSurge: 1,
-    },
-    // Chaos Incarnate (level 10, replaces Primordial Strike)
-    {
-      id: "spend-chaos-incarnate",
-      description: "<strong>Chaos Incarnate</strong>: When you use Primordial Strike, you can spend up to 3 ferocity, gaining 1 surge per ferocity spent to use for that strike. The surge's extra damage can be acid, cold, corruption, fire, lightning, poison, or sonic (your choice).",
-      spendXDetail: "Chaos Incarnate — Gained {spendAmount} surge(s) for a strike. Extra damage type: acid, cold, corruption, fire, lightning, poison, or sonic (your choice).",
-      cost: 1,
-      minLevel: 10,
-      replaces: "spend-primordial-strike",
-      action: "spendX",
-      spendXTitle: "Chaos Incarnate",
-      spendXHardMax: 3,
-      grantsSurgePerSpend: true,
     },
   ],
 
@@ -678,7 +665,7 @@ const NULL = {
         },
         {
           id: "spend-psi-heightened",
-          description: "<strong>Heightened Power:</strong> If the ability deals rolled damage, it deals extra damage equal to your Intuition score ([[@characteristics.intuition.value]]).",
+          description: "<strong>Heightened Power:</strong> If the ability deals rolled damage, it deals extra damage equal to your Intuition score ([[/damage @characteristics.intuition.value]]).",
           cost: 1,
           minLevel: 7,
         },
@@ -701,12 +688,6 @@ const NULL = {
           minLevel: 7,
         },
       ],
-    },
-    {
-      id: "spend-manifold-resonance",
-      description: "<strong>Manifold Resonance:</strong> Whenever you use an ability, you gain 1 discipline that can only be used to apply a Psi Boost to that ability.",
-      minLevel: 10,
-      isDescriptionOnly: true,
     },
   ],
 
@@ -816,7 +797,7 @@ const TACTICIAN = {
     // Mark — base triggered action
     {
       id: "spend-mark",
-      description: "<strong>Mark</strong> (free triggered action — when you or any ally deals rolled damage to a creature marked by you): Spend 1 focus for one benefit (one per trigger):<ul><li>The ability deals extra damage equal to twice your Reason score ([[@characteristics.reason.value]] × 2).</li><li>The creature dealing the damage can spend a Recovery.</li><li>The creature dealing the damage can shift up to [[@characteristics.reason.value]] squares.</li></ul>",
+      description: "<strong>Mark</strong> (free triggered action — when you or any ally deals rolled damage to a creature marked by you): Spend 1 focus for one benefit (one per trigger):<ul><li>The ability deals extra damage equal to twice your Reason score ([[/damage 2*@characteristics.reason.value]]).</li><li>The creature dealing the damage can spend a Recovery.</li><li>The creature dealing the damage can shift up to [[@characteristics.reason.value]] squares.</li></ul>",
       cost: 1,
       minLevel: 1,
     },
@@ -845,7 +826,7 @@ const TACTICIAN = {
     },
     {
       id: "spend-parry",
-      description: "<strong>Parry</strong> (Vanguard)<br><em>Trigger: A creature deals damage to you or one ally within 2.</em><br>Effect: You can shift 1 square. If the target is you, or if you end this shift adjacent to the target, the target takes half the damage. If the damage has any potency effect, the potency is decreased by 1.<br><strong>Spend 1 Focus:</strong> This ability's distance becomes Melee 1 + [[@characteristics.reason.value]], and you can shift up to [[@characteristics.reason.value]] squares instead of 1.",
+      description: "<strong>Parry</strong> (Vanguard)<br><em>Trigger: A creature deals damage to you or one ally within 2.</em><br>Effect: You can shift 1 square. If the target is you, or if you end this shift adjacent to the target, the target takes half the damage. If the damage has any potency effect, the potency is decreased by 1.<br><strong>Spend 1 Focus:</strong> This ability's distance becomes Melee [[1 + @characteristics.reason.value]], and you can shift up to [[@characteristics.reason.value]] squares instead of 1.",
       cost: 1,
       minLevel: 1,
       requiresSubclass: "Vanguard",
@@ -897,18 +878,197 @@ const TACTICIAN = {
       requiresSubclass: "Vanguard",
       replaces: "spend-melee-superiority",
     },
-    // Level 10 — Command (Epic Resource)
+  ],
+
+  passiveEffects: [],
+};
+const TALENT = {
+  id: "talent",
+  className: "Talent",
+  resourceName: "Clarity",
+
+  // Strain — class feature shown above Gains
+  classFeature: {
+    type: "strain",
+    label: "Strained",
+    inactiveLabel: "Not Strained",
+    activeColor: "red",
+    description: "You can spend clarity you don't have, pushing that Heroic Resource into negative numbers to a maximum negative value equal to 1 + your Reason score ([[1 + @characteristics.reason.value]]). At the end of each of your turns, you take 1 damage for each negative point of clarity. Whenever you have clarity below 0, you are strained.",
+    allowNegative: true,
+  },
+
+  gains: [
     {
-      id: "spend-command",
-      description: "<strong>Command</strong> (Epic Resource): You can spend command on your abilities as if it were focus.<ul><li><strong>Spend 1 Command:</strong> Whenever you or any ally uses an ability to deal rolled damage to a creature marked by you, increase the power roll outcome for that target by one tier (free triggered action).</li><li><strong>Spend 1 Command:</strong> Whenever an enemy marked by you makes an ability roll, decrease the power roll outcome by one tier (free triggered action).</li></ul>Command remains until you spend it.",
+      id: "combat-start",
+      description: "At the start of a combat encounter, you gain clarity equal to your Victories.",
+      amount: "victories",
+      minLevel: 1,
+    },
+    {
+      id: "turn-start",
+      description: "At the start of each of your turns during combat, you gain 1d3 clarity.",
+      amount: "1d3",
+      minLevel: 1,
+      action: "roll",
+    },
+    {
+      id: "turn-start-lv7",
+      description: "At the start of each of your turns during combat, you gain 1d3 + 1 clarity. (Lucid Mind)",
+      amount: "1d3 + 1",
+      minLevel: 7,
+      replaces: "turn-start",
+      action: "roll",
+    },
+    {
+      id: "turn-start-lv10",
+      description: "At the start of each of your turns during combat, you gain 1d3 + 2 clarity. (Psion)",
+      amount: "1d3 + 2",
       minLevel: 10,
-      isDescriptionOnly: true,
+      replaces: "turn-start-lv7",
+      action: "roll",
+    },
+    {
+      id: "force-move-trigger",
+      description: "The first time each combat round that a creature is force moved, you gain 1 clarity.",
+      amount: 1,
+      minLevel: 1,
+    },
+    {
+      id: "force-move-trigger-lv4",
+      description: "The first time each combat round that a creature is force moved, you gain 2 clarity. (Mind Recovery)",
+      amount: 2,
+      minLevel: 4,
+      replaces: "force-move-trigger",
+    },
+    {
+      id: "force-move-trigger-lv10",
+      description: "The first time each combat round that a creature is force moved, you gain 3 clarity. (Clear Mind)",
+      amount: 3,
+      minLevel: 10,
+      replaces: "force-move-trigger-lv4",
+    },
+    // Level 4 — Mind Recovery (spends a Recovery to gain 3 clarity)
+    {
+      id: "gain-mind-recovery",
+      description: "<strong>Mind Recovery:</strong> Whenever you spend a Recovery to regain Stamina while strained, you can forgo the Stamina and gain 3 clarity instead.",
+      amount: 3,
+      minLevel: 4,
+      action: "mindRecovery",
+    },
+  ],
+
+  spends: [
+    // Tradition Features (filtered by ability)
+    {
+      id: "spend-accelerate",
+      description: "<strong>Accelerate</strong> (Chronopathy): The target can use a maneuver in addition to shifting.",
+      cost: 2,
+      minLevel: 1,
+      requiresAbility: "Accelerate",
+    },
+    {
+      id: "spend-minor-telekinesis",
+      description: "<strong>Minor Telekinesis</strong> (Telekinesis): The size of the creature or object you can target increases by 1 for every 2 clarity spent.",
+      spendXDetail: "Minor Telekinesis — Target size increased by {spendAmount} (spent {totalSpend} clarity).",
+      cost: 2,
+      minLevel: 1,
+      requiresAbility: "Minor Telekinesis",
+      action: "spendX",
+      spendXTitle: "Minor Telekinesis",
+      spendXStep: 2,
+    },
+    {
+      id: "spend-minor-telekinesis-vertical",
+      description: "<strong>Minor Telekinesis — Vertical Slide</strong> (Telekinesis): You can vertical slide the target instead of a normal slide.",
+      cost: 3,
+      minLevel: 1,
+      requiresAbility: "Minor Telekinesis",
+    },
+    {
+      id: "spend-remote-assistance",
+      description: "<strong>Remote Assistance</strong> (Telepathy): Target one additional creature or object.",
+      cost: 1,
+      minLevel: 1,
+      requiresAbility: "Remote Assistance",
+    },
+    // Level 5 Tradition Features
+    {
+      id: "spend-speed-of-thought",
+      description: "<strong>Speed of Thought</strong> (Chronopathy): Once per combat round while not dying, turn a triggered action into a free triggered action.",
+      cost: 2,
+      minLevel: 5,
+      requiresAbility: "Speed of Thought",
+    },
+    {
+      id: "spend-triangulate",
+      description: "<strong>Triangulate</strong> (Telekinesis): As a free triggered action, allow an ally using a ranged ability while within its distance to use the ability as if they were in your space.",
+      cost: 1,
+      minLevel: 5,
+      requiresAbility: "Triangulate",
+    },
+    // Level 6 — Psi Boost
+    {
+      id: "spend-psi-boost",
+      description: "<strong>Psi Boost:</strong> When you use a main action or maneuver with the Psionic keyword, you can spend clarity to apply one or more of the following boosts. Each boost can only be applied once per ability use:",
+      minLevel: 6,
+      isGroupHeader: true,
+      children: [
+        {
+          id: "spend-psi-dynamic",
+          description: "<strong>Dynamic Power:</strong> If the ability force moves a target, the forced movement distance gains a bonus equal to your Reason score ([[@characteristics.reason.value]]).",
+          cost: 1,
+          minLevel: 6,
+        },
+        {
+          id: "spend-psi-expanded",
+          description: "<strong>Expanded Power:</strong> If the ability targets an area, increase the size of the area by 1. If the area is a line, increase one dimension only.",
+          cost: 3,
+          minLevel: 6,
+        },
+        {
+          id: "spend-psi-extended",
+          description: "<strong>Extended Power:</strong> If the ability is ranged, the distance gains a bonus equal to your Reason score ([[@characteristics.reason.value]]). If melee, the distance gains a +2 bonus.",
+          cost: 1,
+          minLevel: 6,
+        },
+        {
+          id: "spend-psi-heightened",
+          description: "<strong>Heightened Power:</strong> If the ability deals rolled damage, it deals extra damage equal to your Reason score ([[/damage @characteristics.reason.value]]).",
+          cost: 1,
+          minLevel: 6,
+        },
+        {
+          id: "spend-psi-magnified",
+          description: "<strong>Magnified Power:</strong> If the ability has a potency, increase that potency by an amount equal to your Reason score ([[@characteristics.reason.value]]).",
+          cost: 5,
+          minLevel: 6,
+        },
+        {
+          id: "spend-psi-shared",
+          description: "<strong>Shared Power:</strong> If the ability targets individual creatures or objects, target one additional creature or object within distance.",
+          cost: 5,
+          minLevel: 6,
+        },
+        {
+          id: "spend-psi-sharpened",
+          description: "<strong>Sharpened Power:</strong> If the ability has any power roll, that roll gains an edge.",
+          cost: 1,
+          minLevel: 6,
+        },
+      ],
+    },
+    // Level 8 — Levitation Field (Telekinesis)
+    {
+      id: "spend-levitation-field",
+      description: "<strong>Levitation Field</strong> (Telekinesis): The fly effect from Levitation Field lasts for 1 hour instead of until the start of your next turn.",
+      cost: 5,
+      minLevel: 8,
+      requiresAbility: "Levitation Field",
     },
   ],
 
   passiveEffects: [],
 };
-const TALENT    = { id: "talent",       className: "Talent",       resourceName: "Clarity",     gains: [], spends: [], passiveEffects: [] };
 const TROUBADOUR = { id: "troubadour",  className: "Troubadour",   resourceName: "Drama",       gains: [], spends: [], passiveEffects: [] };
 
 // ── Registry ─────────────────────────────────────────────────────────────────

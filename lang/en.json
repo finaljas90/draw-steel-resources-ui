@@ -58,6 +58,16 @@
     "Fury": {
       "GrowthSurge": "Growing Ferocity — surge gained"
     },
+    "Talent": {
+      "StrainBtn": "Strain Damage",
+      "StrainDamage": "Strain Damage",
+      "StrainDamageDesc": "Takes {damage} from negative clarity (1 per negative point).",
+      "NotStrained": "Not currently strained (clarity is not negative).",
+      "MindRecoveryBtn": "-1 Recovery, +3 Clarity",
+      "MindRecovery": "Mind Recovery",
+      "MindRecoveryDesc": "Spent 1 Recovery to gain 3 clarity instead of Stamina. ({recoveries} recoveries remaining)",
+      "NoRecoveries": "No recoveries remaining."
+    },
     "GrowthSurge": "surge gained",
     "Notify": {
       "NoResource": "No resource to spend.",

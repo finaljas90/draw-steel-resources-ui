@@ -105,11 +105,11 @@ export async function resolveGainAmount(entry, actor) {
 
 /**
  * Update the heroic resource value on the actor.
- * Clamps to a minimum of 0.
+ * Clamps to a minimum of 0 by default, or minValue if provided.
  */
-export async function updateHeroicResource(actor, delta) {
+export async function updateHeroicResource(actor, delta, { minValue = 0 } = {}) {
   const current = actor.system.hero.primary.value ?? 0;
-  const next = Math.max(0, current + delta);
+  const next = Math.max(minValue, current + delta);
   await actor.update({ "system.hero.primary.value": next });
   return { previous: current, current: next };
 }

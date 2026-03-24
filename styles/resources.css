@@ -133,20 +133,22 @@
   text-align: center;
   letter-spacing: 0.04em;
   background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
+  border: 1px solid var(--color-border-light-2, #444);
+  border-radius: 4px;
   cursor: pointer;
   color: var(--color-text-secondary, #888);
-  transition: color 0.15s, border-color 0.15s;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 
 .dsresources-tab:hover {
   color: var(--color-text-primary, #eee);
+  border-color: var(--color-text-secondary, #888);
 }
 
 .dsresources-tab.active {
   color: var(--color-text-primary, #eee);
-  border-bottom-color: var(--color-bg-btn, #3d6b9e);
+  border-color: var(--color-bg-btn, #3d6b9e);
+  background: rgba(61, 107, 158, 0.15);
 }
 
 .dsresources-tab:disabled {
@@ -231,29 +233,70 @@
   margin-bottom: 0;
 }
 
-/* ── Mantle indicator (Elementalist) ───────────────── */
+/* ── Class Feature section (Mantle / Strain) ───────── */
 
-.dsresources-mantle-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 12px;
-  padding: 4px 0;
+.dsresources-class-feature {
+  margin-bottom: 4px;
 }
 
-.dsresources-mantle-label {
+.dsresources-class-feature-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.dsresources-class-feature-status {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dsresources-class-feature--green {
+  color: #4ade80;
+}
+
+.dsresources-class-feature--red {
+  color: #f87171;
+}
+
+.dsresources-class-feature--inactive {
+  color: var(--color-text-secondary, #888);
+  font-style: italic;
   font-weight: 600;
 }
 
-.dsresources-mantle-active {
-  color: #4ade80;
-  font-weight: 700;
+.dsresources-class-feature-desc {
+  font-size: 11px;
+  color: var(--color-text-secondary, #aaa);
+  padding: 4px 0 2px;
+  line-height: 1.4;
 }
 
-.dsresources-mantle-inactive {
-  color: var(--color-text-secondary, #888);
-  font-style: italic;
+.dsresources-entry-btn--danger {
+  background: #b91c1c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.dsresources-entry-btn--danger:hover {
+  background: #dc2626;
+}
+
+.dsresources-entry-btn--danger:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* ── Section titles ────────────────────────────────────── */
@@ -332,12 +375,18 @@
   border-color: transparent;
 }
 
+.dsresources-entry-btn--recovery {
+  background: #6b21a8;
+  color: #fff;
+  border-color: transparent;
+}
+
 /* ── Divider ───────────────────────────────────────────── */
 
 .dsresources-divider {
   border: none;
   border-top: 1px solid var(--color-border-light-2);
-  margin: 8px 0 0;
+  margin: 8px 0;
 }
 
 .dsresources-sticky-header > .dsresources-divider:first-child {

@@ -59,6 +59,8 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       gainGrowthSurge:  ResourceApp.#gainGrowthSurge,
       incrementToken:   ResourceApp.#incrementToken,
       decrementToken:   ResourceApp.#decrementToken,
+      strainDamage:     ResourceApp.#strainDamage,
+      mindRecovery:     ResourceApp.#mindRecovery,
     },
   };
 
@@ -213,8 +215,11 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
         gains.push({
           ...e,
           description: enrichedDesc,
-          label: e.action === "pray" ? game.i18n.localize("DSRESOURCES.Conduit.Pray") : gainLabel(e, actor),
+          label: e.action === "pray" ? game.i18n.localize("DSRESOURCES.Conduit.Pray")
+            : e.action === "mindRecovery" ? game.i18n.localize("DSRESOURCES.Talent.MindRecoveryBtn")
+            : gainLabel(e, actor),
           isPray: e.action === "pray",
+          isMindRecovery: e.action === "mindRecovery",
         });
       }
       const enrichedSpends = resolveEntries(classDef.spends, heroLevel);
@@ -241,8 +246,12 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
         if (isSpendX) {
           const currentResource = actor.system.hero?.primary?.value ?? 0;
           const step = e.spendXStep ?? 1;
+          const allowNeg = classDef?.classFeature?.allowNegative ?? false;
+          const effectiveResource = allowNeg
+            ? currentResource + (1 + (actor.getRollData?.()?.characteristics?.reason?.value ?? 0))
+            : currentResource;
           spendXMin = e.cost ?? 1;
-          spendXMax = Math.floor(currentResource / step) * step;
+          spendXMax = Math.floor(effectiveResource / step) * step;
           if (e.spendXHardMax) spendXMax = Math.min(spendXMax, e.spendXHardMax);
           if (spendXMax < spendXMin) spendXMax = spendXMin;
           const raw = this._spendXValues[e.id] ?? spendXMin;
@@ -344,18 +353,52 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     const hasPassiveEffects = passiveEffects.length > 0;
     const noClassData = !classDef || (gains.length === 0 && spends.length === 0);
 
-    // Mantle of Essence indicator (Elementalist)
-    let mantleIndicator = null;
-    if (classDef?.mantleIndicator) {
-      const mi = classDef.mantleIndicator;
-      if (heroLevel >= mi.minLevel) {
-        const stamina = actor.system.stamina?.value ?? 0;
-        const isDying = stamina <= 0;
-        const noThreshold = heroLevel >= mi.noThresholdLevel;
-        const isActive = !isDying && (noThreshold || heroicValue >= mi.essenceThreshold);
-        mantleIndicator = {
-          label: mi.abilityName,
+    // Class feature section (Elementalist: Mantle of Essence / Talent: Strain)
+    let classFeature = null;
+    if (classDef?.classFeature) {
+      const cf = classDef.classFeature;
+      const enrichOpts2 = { rollData: actor.getRollData(), async: true };
+
+      if (cf.type === "mantle") {
+        // Mantle of Essence — threshold-based active/inactive
+        if (heroLevel >= cf.minLevel) {
+          const stamina = actor.system.stamina?.value ?? 0;
+          const isDying = stamina <= 0;
+          const noThreshold = heroLevel >= cf.noThresholdLevel;
+          const isActive = !isDying && (noThreshold || heroicValue >= cf.threshold);
+
+          // Find subclass-specific description
+          let description = "";
+          if (cf.subclassDescriptions) {
+            for (const [subName, desc] of Object.entries(cf.subclassDescriptions)) {
+              if (actor.items.some((i) => i.name === subName && i.type === "subclass")) {
+                description = await TextEditor.enrichHTML(desc, enrichOpts2);
+                break;
+              }
+            }
+          }
+
+          classFeature = {
+            type: cf.type,
+            label: cf.label,
+            isActive,
+            activeColor: cf.activeColor ?? "green",
+            description,
+          };
+        }
+      } else if (cf.type === "strain") {
+        // Strain — active when heroic resource < 0
+        const isActive = heroicValue < 0;
+        const description = await TextEditor.enrichHTML(cf.description, enrichOpts2);
+        classFeature = {
+          type: cf.type,
+          label: cf.label,
+          inactiveLabel: cf.inactiveLabel,
           isActive,
+          activeColor: cf.activeColor ?? "red",
+          description,
+          allowNegative: cf.allowNegative ?? false,
+          strainAmount: isActive ? Math.abs(heroicValue) : 0,
         };
       }
     }
@@ -381,7 +424,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       showPassives: this._showPassives,
       passiveEffects,
       noClassData,
-      mantleIndicator,
+      classFeature,
       growthTables,
       className: classDef?.className ?? classItem?.name ?? "",
     };
@@ -420,12 +463,24 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
   static async #decrementHeroic(_event, _target) {
     const actor = this.#getActiveActor();
     if (!actor) return;
+    const classDef = getClassDefinition(actor);
+    const allowNeg = classDef?.classFeature?.allowNegative ?? false;
     const current = actor.system.hero?.primary?.value ?? 0;
-    if (current <= 0) {
+    if (!allowNeg && current <= 0) {
       ui.notifications.warn(game.i18n.localize("DSRESOURCES.Notify.NoResource"));
       return;
     }
-    await updateHeroicResource(actor, -1);
+    if (allowNeg) {
+      const reason = actor.getRollData?.()?.characteristics?.reason?.value ?? 0;
+      const minValue = -(1 + reason);
+      if (current <= minValue) {
+        ui.notifications.warn(game.i18n.localize("DSRESOURCES.Notify.NoResource"));
+        return;
+      }
+      await updateHeroicResource(actor, -1, { minValue });
+    } else {
+      await updateHeroicResource(actor, -1);
+    }
   }
 
   static async #gainHeroic(_event, target) {
@@ -495,6 +550,36 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     }
   }
 
+  static async #mindRecovery(_event, _target) {
+    const actor = this.#getActiveActor();
+    if (!actor) return;
+
+    const recoveries = actor.system.recoveries?.value ?? 0;
+    if (recoveries <= 0) {
+      ui.notifications.warn(game.i18n.localize("DSRESOURCES.Talent.NoRecoveries"));
+      return;
+    }
+
+    // Spend 1 Recovery, gain 3 clarity
+    await actor.update({ "system.recoveries.value": recoveries - 1 });
+    const result = await updateHeroicResource(actor, 3);
+    const resourceName = getClassItem(actor)?.system?.primary ?? "Clarity";
+    const speaker = ChatMessage.getSpeaker({ actor });
+    const content = `
+      <div class="dsresources-chat-card">
+        <div class="dsresources-chat-header">
+          <strong>${speaker.alias}</strong> — ${game.i18n.localize("DSRESOURCES.Talent.MindRecovery")}
+        </div>
+        <div class="dsresources-chat-method">
+          ${game.i18n.format("DSRESOURCES.Talent.MindRecoveryDesc", { recoveries: recoveries - 1 })}
+        </div>
+        <div class="dsresources-chat-summary">
+          ${resourceName}: ${result.previous} → ${result.current}
+        </div>
+      </div>`;
+    await ChatMessage.create({ user: game.user.id, speaker, content });
+  }
+
   static async #spendHeroic(_event, target) {
     const actor = this.#getActiveActor();
     if (!actor) return;
@@ -518,13 +603,24 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     if (!entry) return;
 
     const current = actor.system.hero?.primary?.value ?? 0;
-    if (current < entry.cost) {
+    const classDef2 = getClassDefinition(actor);
+    const allowNeg = classDef2?.classFeature?.allowNegative ?? false;
+    if (!allowNeg && current < entry.cost) {
       ui.notifications.warn(game.i18n.localize("DSRESOURCES.Notify.NotEnough"));
       return;
     }
+    if (allowNeg) {
+      const reason = actor.getRollData?.()?.characteristics?.reason?.value ?? 0;
+      const minValue = -(1 + reason);
+      if (current - entry.cost < minValue) {
+        ui.notifications.warn(game.i18n.localize("DSRESOURCES.Notify.NotEnough"));
+        return;
+      }
+    }
 
     const resourceName = getClassItem(actor)?.system?.primary ?? "Resource";
-    const result = await updateHeroicResource(actor, -entry.cost);
+    const opts = allowNeg ? { minValue: -(1 + (actor.getRollData?.()?.characteristics?.reason?.value ?? 0)) } : {};
+    const result = await updateHeroicResource(actor, -entry.cost, opts);
 
     // Handle optional surge grant on spend (e.g. Primordial Strike)
     if (entry.grantsSurge) {
@@ -670,7 +766,11 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     const currentResource = actor.system.hero?.primary?.value ?? 0;
     const step = entry.spendXStep ?? 1;
     const minSpend = entry.cost ?? 1;
-    let maxSpend = Math.max(minSpend, Math.floor(currentResource / step) * step);
+    const allowNeg = classDef?.classFeature?.allowNegative ?? false;
+    const effectiveResource = allowNeg
+      ? currentResource + (1 + (actor.getRollData?.()?.characteristics?.reason?.value ?? 0))
+      : currentResource;
+    let maxSpend = Math.max(minSpend, Math.floor(effectiveResource / step) * step);
     if (entry.spendXHardMax) maxSpend = Math.min(maxSpend, entry.spendXHardMax);
 
     const current = this._spendXValues[spendId] ?? minSpend;
@@ -695,14 +795,23 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     const spendAmount = this._spendXValues[spendId] ?? entry.cost ?? 1;
     const currentResource = actor.system.hero?.primary?.value ?? 0;
 
-    if (currentResource < spendAmount) {
+    const allowNeg = classDef?.classFeature?.allowNegative ?? false;
+    if (allowNeg) {
+      const reason = actor.getRollData?.()?.characteristics?.reason?.value ?? 0;
+      const minValue = -(1 + reason);
+      if (currentResource - spendAmount < minValue) {
+        ui.notifications.warn(game.i18n.localize("DSRESOURCES.Notify.NotEnough"));
+        return;
+      }
+    } else if (currentResource < spendAmount) {
       ui.notifications.warn(game.i18n.localize("DSRESOURCES.Notify.NotEnough"));
       return;
     }
 
     const resourceName = getClassItem(actor)?.system?.primary ?? "Resource";
     const title = entry.spendXTitle ?? game.i18n.localize("DSRESOURCES.Section.Spend");
-    const result = await updateHeroicResource(actor, -spendAmount);
+    const opts = allowNeg ? { minValue: -(1 + (actor.getRollData?.()?.characteristics?.reason?.value ?? 0)) } : {};
+    const result = await updateHeroicResource(actor, -spendAmount, opts);
 
     // Handle optional surge grant per spend (e.g. Chaos Incarnate)
     if (entry.grantsSurgePerSpend) {
@@ -761,6 +870,36 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       previous: result.previous,
       current: 0,
     });
+  }
+
+  /** Post a damage roll to chat for Talent strain damage. */
+  static async #strainDamage(_event, _target) {
+    const actor = this.#getActiveActor();
+    if (!actor) return;
+
+    const heroicValue = actor.system.hero?.primary?.value ?? 0;
+    if (heroicValue >= 0) {
+      ui.notifications.warn(game.i18n.localize("DSRESOURCES.Talent.NotStrained"));
+      return;
+    }
+
+    const damage = Math.abs(heroicValue);
+    const speaker = ChatMessage.getSpeaker({ actor });
+    const enrichOpts = { rollData: actor.getRollData(), async: true };
+    const damageRoll = `[[/damage ${damage}]]`;
+    const enrichedDamage = await TextEditor.enrichHTML(damageRoll, enrichOpts);
+    const desc = game.i18n.format("DSRESOURCES.Talent.StrainDamageDesc", { damage: enrichedDamage });
+    const content = `
+      <div class="dsresources-chat-card">
+        <div class="dsresources-chat-header">
+          <strong>${speaker.alias}</strong> — ${game.i18n.localize("DSRESOURCES.Talent.StrainDamage")}
+        </div>
+        <div class="dsresources-chat-method">
+          ${desc}
+        </div>
+      </div>`;
+
+    await ChatMessage.create({ user: game.user.id, speaker, content });
   }
 
   // ── Actions: surges ────────────────────────────────────────────────────────

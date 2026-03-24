@@ -91,17 +91,6 @@
 
     </div>
 
-    {{#if mantleIndicator}}
-    <div class="dsresources-mantle-indicator">
-      <span class="dsresources-mantle-label">{{mantleIndicator.label}}:</span>
-      {{#if mantleIndicator.isActive}}
-      <span class="dsresources-mantle-status dsresources-mantle-active">{{localize "DSRESOURCES.Mantle.Active"}}</span>
-      {{else}}
-      <span class="dsresources-mantle-status dsresources-mantle-inactive">{{localize "DSRESOURCES.Mantle.Inactive"}}</span>
-      {{/if}}
-    </div>
-    {{/if}}
-
   </div>
 
   {{!-- ── Tab bar ─────────────────────────────────────────────────────── --}}
@@ -129,6 +118,32 @@
       <p class="dsresources-empty">{{localize "DSRESOURCES.NoClassData"}}</p>
       {{else}}
 
+      {{!-- ── Class Feature section (Mantle / Strain) ─────────────────── --}}
+      {{#if classFeature}}
+      <div class="dsresources-section dsresources-class-feature">
+        <div class="dsresources-class-feature-header">
+          {{#if classFeature.isActive}}
+          <span class="dsresources-class-feature-status dsresources-class-feature--{{classFeature.activeColor}}">{{classFeature.label}}</span>
+          {{else}}
+          <span class="dsresources-class-feature-status dsresources-class-feature--inactive">
+            {{#if classFeature.inactiveLabel}}{{classFeature.inactiveLabel}}{{else}}{{classFeature.label}}: {{localize "DSRESOURCES.Mantle.Inactive"}}{{/if}}
+          </span>
+          {{/if}}
+          {{#if (eq classFeature.type "strain")}}
+          <button type="button" class="dsresources-entry-btn dsresources-entry-btn--danger"
+            data-action="strainDamage" {{#unless classFeature.isActive}}disabled{{/unless}}>
+            <i class="fa-solid fa-heart-crack"></i>
+            {{localize "DSRESOURCES.Talent.StrainBtn"}}
+          </button>
+          {{/if}}
+        </div>
+        {{#if classFeature.description}}
+        <div class="dsresources-class-feature-desc">{{{classFeature.description}}}</div>
+        {{/if}}
+      </div>
+      <hr class="dsresources-divider" />
+      {{/if}}
+
       {{!-- ── Gain section ────────────────────────────────────────────── --}}
       <div class="dsresources-section">
         <h3 class="dsresources-section-title">{{localize "DSRESOURCES.Section.Gain"}}</h3>
@@ -138,6 +153,11 @@
           {{#if this.isPray}}
           <button type="button" class="dsresources-entry-btn dsresources-entry-btn--pray"
             data-action="prayHeroic" data-gain-id="{{this.id}}">
+            {{this.label}}
+          </button>
+          {{else if this.isMindRecovery}}
+          <button type="button" class="dsresources-entry-btn dsresources-entry-btn--recovery"
+            data-action="mindRecovery" data-gain-id="{{this.id}}">
             {{this.label}}
           </button>
           {{else}}
