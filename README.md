@@ -4,7 +4,7 @@ A Foundry VTT module for the [Draw Steel](https://mcdmproductions.com) system th
 
 ## Summary
 
-Resource Tracker gives players and GMs a dedicated sidebar panel for managing all nine heroic resource types in Draw Steel. Instead of opening character sheets mid-combat, heroes can gain, spend, and track their resources with one-click buttons directly from the panel.
+Resources UI gives players and GMs a dedicated sidebar panel for managing all nine heroic resource types in Draw Steel. Instead of opening character sheets mid-combat, heroes can gain, spend, and track their resources with one-click buttons directly from the panel.
 
 ## Features
 
