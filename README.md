@@ -70,7 +70,7 @@ https://github.com/OmerCora/draw-steel-resources-ui/releases/latest/download/mod
 
 ## License
 
-Module code is licensed under [MIT](LICENSE) &copy; Ömer Cora.
+Module code is licensed under [MIT](LICENSE).
 
 This module uses content from *Draw Steel: Heroes* (ISBN: 978-1-7375124-7-9) under the [DRAW STEEL Creator License](https://mcdm.gg/DS-license).
 
