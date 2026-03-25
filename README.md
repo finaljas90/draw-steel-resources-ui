@@ -21,7 +21,7 @@ Resources UI gives players and GMs a dedicated sidebar panel for managing all ni
 - **Null:** Discipline Mastery passive tables, Psi Boost spend group, strain damage tracking with negative resource support
 - **Shadow:** Edge Discount surge gain, subclass-filtered Kit abilities
 - **Tactician:** Mark benefits and Doctrine-specific triggered actions filtered by subclass
-- **Talent:** Mind Recovery mechanic (spend a Recovery to gain clarity), Tradition-filtered abilities
+- **Talent:** Strained section, Mind Recovery mechanic (spend a Recovery to gain clarity), Tradition-filtered abilities
 - **Troubadour:** Melodrama gain group, subclass-filtered Class Act features
 
 ### Subclass and Ability Filtering
