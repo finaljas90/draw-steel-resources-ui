@@ -1,4 +1,4 @@
-# Draw Steel - Resource Tracker
+# Draw Steel - Resources UI
 
 A Foundry VTT module for the [Draw Steel](https://mcdmproductions.com) system that provides a compact, always-visible panel to track and manage Heroic Resources, Surges, and Hero Tokens during play.
 
