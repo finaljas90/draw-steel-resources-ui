@@ -57,6 +57,7 @@
   display: flex;
   align-items: stretch;
   gap: 0;
+  padding: 0 4px;
 }
 
 .dsresources-value-col {
@@ -66,6 +67,7 @@
   align-items: center;
   justify-content: center;
   padding: 6px 4px 2px;
+  min-width: 0;
 }
 
 .dsresources-value-divider {
@@ -351,6 +353,8 @@
   cursor: pointer;
   white-space: nowrap;
   transition: filter 0.12s;
+  position: relative;
+  top: -4px;
 }
 
 .dsresources-entry-btn:hover {
@@ -688,6 +692,8 @@
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
+  position: relative;
+  top: -4px;
 }
 
 .dsresources-spendx-adj {
