@@ -1369,7 +1369,7 @@ const TROUBADOUR = {
     {
       id: "spend-hypnotic-overtones",
       description: "<strong>Hypnotic Overtones</strong> (main action): You make a power roll against each enemy in a 2 burst, dealing psychic damage and potentially dazing them.<br><strong>Spend 2+ Drama:</strong> The size of the burst increases by 1 for every 2 drama spent.",
-      cost: 3,
+      cost: 2,
       minLevel: 3,
       requiresAbility: "Hypnotic Overtones",
       action: "spendX",
