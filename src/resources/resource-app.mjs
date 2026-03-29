@@ -24,6 +24,19 @@ import {
   postResourceChat,
 } from "./resource-logic.mjs";
 
+/** Map trackUsage scope to its key prefix. */
+function trackKeyPrefix(scope) {
+  if (scope === "turn") return "turn";
+  if (scope === "encounter") return "encounter";
+  return "round";
+}
+
+/** Check whether combat tracking is currently enabled. */
+function combatTrackingEnabled() {
+  try { return game.settings.get(MODULE_ID, "combatTracking"); }
+  catch { return false; }
+}
+
 export class ResourceApp extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
 ) {
@@ -65,6 +78,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       spendTokenRecovery: ResourceApp.#spendTokenRecovery,
       strainDamage:     ResourceApp.#strainDamage,
       mindRecovery:     ResourceApp.#mindRecovery,
+      undoUsage:        ResourceApp.#undoUsage,
     },
   };
 
@@ -103,6 +117,54 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
 
   /** GM-only: id of the currently viewed hero actor. null = auto-select first. */
   _selectedActorId = null;
+
+  /**
+   * Combat tracking: entries used this round/turn, keyed by actorId.
+   * Each value is a Set of tracking keys (entry IDs or "growth:{tableId}:{surgeGroup}").
+   * @type {Object<string, Set<string>>}
+   */
+  _usedEntries = {};
+
+  /** Mark an entry as used for a given actor. */
+  markEntryUsed(actorId, trackKey) {
+    if (!this._usedEntries[actorId]) this._usedEntries[actorId] = new Set();
+    this._usedEntries[actorId].add(trackKey);
+    this.render(false);
+  }
+
+  /** Check whether an entry is currently marked as used. */
+  isEntryUsed(actorId, trackKey) {
+    return this._usedEntries[actorId]?.has(trackKey) ?? false;
+  }
+
+  /**
+   * Reset used entries based on scope.
+   * @param {"all"|"round"|"turn"} scope  "all" clears everything (encounter end), "round" clears turn+round scoped, "turn" clears only turn-scoped entries.
+   */
+  resetUsedEntries(scope) {
+    if (scope === "all") {
+      this._usedEntries = {};
+    } else if (scope === "round") {
+      // Remove turn-scoped and round-scoped but keep encounter-scoped
+      for (const actorId of Object.keys(this._usedEntries)) {
+        const set = this._usedEntries[actorId];
+        for (const key of [...set]) {
+          if (key.startsWith("turn:") || key.startsWith("round:")) set.delete(key);
+        }
+        if (set.size === 0) delete this._usedEntries[actorId];
+      }
+    } else if (scope === "turn") {
+      // Only remove keys tagged as turn-scoped
+      for (const actorId of Object.keys(this._usedEntries)) {
+        const set = this._usedEntries[actorId];
+        for (const key of [...set]) {
+          if (key.startsWith("turn:")) set.delete(key);
+        }
+        if (set.size === 0) delete this._usedEntries[actorId];
+      }
+    }
+    this.render(false);
+  }
 
   /**
    * Resolve the actor this panel is currently displaying.
@@ -164,6 +226,19 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     const heroicValue = actor.system.hero?.primary?.value ?? 0;
     const surgeValue  = actor.system.hero?.surges ?? 0;
 
+    // Combat tracking helper
+    const trackingOn = combatTrackingEnabled();
+    const trackInfo = (entry) => {
+      if (!trackingOn || !entry.trackUsage) return { isUsed: false, trackKey: null };
+      const trackKey = `${trackKeyPrefix(entry.trackUsage)}:${entry.id}`;
+      return { isUsed: this.isEntryUsed(actor.id, trackKey), trackKey };
+    };
+    const growthTrackInfo = (row, tableId) => {
+      if (!trackingOn || !row.trackUsage || !row.surgeGroup) return { isUsed: false, trackKey: null };
+      const trackKey = `${trackKeyPrefix(row.trackUsage)}:growth:${tableId}:${row.surgeGroup}`;
+      return { isUsed: this.isEntryUsed(actor.id, trackKey), trackKey };
+    };
+
     // Highest characteristic score for surge damage
     const chars = actor.system?.characteristics ?? {};
     let highestChar = 0;
@@ -214,6 +289,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
               ...child,
               description: childDesc,
               label: gainLabel(child, actor),
+              ...trackInfo(child),
             });
           }
         }
@@ -228,6 +304,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
           isMindRecovery: e.action === "mindRecovery",
           isAutomated: e.id === "combat-start" || e.id.startsWith("turn-start"),
           children: processedChildren,
+          ...trackInfo(e),
         });
       }
       const enrichedSpends = resolveEntries(classDef.spends, heroLevel);
@@ -289,6 +366,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
               description: childDesc,
               label: spendLabel(child),
               isSpendX: false,
+              ...trackInfo(child),
             });
           }
         }
@@ -304,6 +382,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
           spendXMin,
           spendXMax,
           children: processedChildren,
+          ...trackInfo(e),
         });
       }
       const rawPassives = (classDef.passiveEffects ?? [])
@@ -332,6 +411,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
               ...row,
               description: enrichedRowDesc,
               isActive: heroicValue >= row.threshold,
+              ...growthTrackInfo(row, table.id),
             });
           }
 
@@ -444,6 +524,7 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       classFeature,
       growthTables,
       className: classDef?.className ?? classItem?.name ?? "",
+      combatTracking: trackingOn,
     };
   }
 
@@ -574,6 +655,11 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
         formula,
       });
     }
+
+    // Combat tracking: mark used
+    if (combatTrackingEnabled() && entry.trackUsage) {
+      this.markEntryUsed(actor.id, `${trackKeyPrefix(entry.trackUsage)}:${entry.id}`);
+    }
   }
 
   static async #mindRecovery(_event, _target) {
@@ -676,6 +762,11 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       damageRoll,
       damageType,
     });
+
+    // Combat tracking: mark used
+    if (combatTrackingEnabled() && entry.trackUsage) {
+      this.markEntryUsed(actor.id, `${trackKeyPrefix(entry.trackUsage)}:${entry.id}`);
+    }
   }
 
   static #togglePassives(_event, _target) {
@@ -890,6 +981,11 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       </div>`;
 
     await ChatMessage.create({ user: game.user.id, speaker, content });
+
+    // Combat tracking: mark used
+    if (combatTrackingEnabled() && entry.trackUsage) {
+      this.markEntryUsed(actor.id, `${trackKeyPrefix(entry.trackUsage)}:${entry.id}`);
+    }
   }
 
   static async #resetHeroic(_event, _target) {
@@ -1050,6 +1146,12 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
       previous: result.previous,
       current: result.current,
     });
+
+    // Combat tracking: mark growth surge used
+    const trackKey = target.dataset.trackKey;
+    if (combatTrackingEnabled() && trackKey) {
+      this.markEntryUsed(actor.id, trackKey);
+    }
   }
 
   // ── Actions: hero tokens ──────────────────────────────────────────────────
@@ -1127,6 +1229,22 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
     const heroTokens = game.actors?.heroTokens;
     if (!heroTokens || heroTokens.value <= 0) return;
     await heroTokens.spendToken("generic");
+    this.render(false);
+  }
+
+  // ── Actions: undo combat tracking ─────────────────────────────────────────
+
+  /** Undo a combat-tracked usage (removes the used flag). */
+  static #undoUsage(_event, target) {
+    const trackKey = target.dataset.trackKey;
+    if (!trackKey) return;
+    const actor = this.#getActiveActor();
+    if (!actor) return;
+    const set = this._usedEntries[actor.id];
+    if (set) {
+      set.delete(trackKey);
+      if (set.size === 0) delete this._usedEntries[actor.id];
+    }
     this.render(false);
   }
 }

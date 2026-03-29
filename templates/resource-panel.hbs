@@ -161,8 +161,15 @@
         {{#each this.children}}
         <div class="dsresources-entry dsresources-entry--child">
           <span class="dsresources-entry-desc">{{{this.description}}}</span>
+          {{#if this.isUsed}}
+          <button type="button" class="dsresources-undo-btn" data-action="undoUsage" data-track-key="{{this.trackKey}}"
+            title="{{localize 'DSRESOURCES.Tooltip.Undo'}}">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+          {{/if}}
           <button type="button" class="dsresources-entry-btn dsresources-entry-btn--gain"
-            data-action="gainHeroic" data-gain-id="{{this.id}}">
+            data-action="gainHeroic" data-gain-id="{{this.id}}"
+            {{#if this.isUsed}}disabled{{/if}}>
             {{this.label}}
           </button>
         </div>
@@ -183,9 +190,15 @@
             {{this.label}}
           </button>
           {{else}}
+          {{#if this.isUsed}}
+          <button type="button" class="dsresources-undo-btn" data-action="undoUsage" data-track-key="{{this.trackKey}}"
+            title="{{localize 'DSRESOURCES.Tooltip.Undo'}}">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+          {{/if}}
           <button type="button" class="dsresources-entry-btn dsresources-entry-btn--gain"
             data-action="gainHeroic" data-gain-id="{{this.id}}"
-            {{#if this.isAutomated}}disabled title="Handled automatically by the system"{{/if}}>
+            {{#if this.isAutomated}}disabled title="Handled automatically by the system"{{else if this.isUsed}}disabled{{/if}}>
             {{this.label}}
           </button>
           {{/if}}
@@ -208,8 +221,15 @@
         {{#each this.children}}
         <div class="dsresources-entry dsresources-entry--child">
           <span class="dsresources-entry-desc">{{{this.description}}}</span>
+          {{#if this.isUsed}}
+          <button type="button" class="dsresources-undo-btn" data-action="undoUsage" data-track-key="{{this.trackKey}}"
+            title="{{localize 'DSRESOURCES.Tooltip.Undo'}}">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+          {{/if}}
           <button type="button" class="dsresources-entry-btn dsresources-entry-btn--spend"
-            data-action="spendHeroic" data-spend-id="{{this.id}}">
+            data-action="spendHeroic" data-spend-id="{{this.id}}"
+            {{#if this.isUsed}}disabled{{/if}}>
             {{this.label}}
           </button>
         </div>
@@ -223,24 +243,40 @@
         <div class="dsresources-entry">
           <span class="dsresources-entry-desc">{{{this.description}}}</span>
           {{#if this.isSpendX}}
+          {{#if this.isUsed}}
+          <button type="button" class="dsresources-undo-btn" data-action="undoUsage" data-track-key="{{this.trackKey}}"
+            title="{{localize 'DSRESOURCES.Tooltip.Undo'}}">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+          {{/if}}
           <div class="dsresources-spendx-inline">
             <button type="button" class="dsresources-spendx-adj"
-              data-action="adjustSpendX" data-spend-id="{{this.id}}" data-direction="-1">
+              data-action="adjustSpendX" data-spend-id="{{this.id}}" data-direction="-1"
+              {{#if this.isUsed}}disabled{{/if}}>
               <i class="fa-solid fa-minus"></i>
             </button>
             <span class="dsresources-spendx-value">{{this.spendXValue}}</span>
             <button type="button" class="dsresources-spendx-adj"
-              data-action="adjustSpendX" data-spend-id="{{this.id}}" data-direction="1">
+              data-action="adjustSpendX" data-spend-id="{{this.id}}" data-direction="1"
+              {{#if this.isUsed}}disabled{{/if}}>
               <i class="fa-solid fa-plus"></i>
             </button>
             <button type="button" class="dsresources-entry-btn {{#if this.grantsSurgePerSpend}}dsresources-entry-btn--surge{{else}}dsresources-entry-btn--spend{{/if}}"
-              data-action="confirmSpendX" data-spend-id="{{this.id}}">
+              data-action="confirmSpendX" data-spend-id="{{this.id}}"
+              {{#if this.isUsed}}disabled{{/if}}>
               {{this.label}}
             </button>
           </div>
           {{else}}
+          {{#if this.isUsed}}
+          <button type="button" class="dsresources-undo-btn" data-action="undoUsage" data-track-key="{{this.trackKey}}"
+            title="{{localize 'DSRESOURCES.Tooltip.Undo'}}">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+          {{/if}}
           <button type="button" class="dsresources-entry-btn {{#if this.grantsSurge}}dsresources-entry-btn--surge{{else}}dsresources-entry-btn--spend{{/if}}"
-            data-action="spendHeroic" data-spend-id="{{this.id}}">
+            data-action="spendHeroic" data-spend-id="{{this.id}}"
+            {{#if this.isUsed}}disabled{{/if}}>
             {{this.label}}
           </button>
           {{/if}}
@@ -273,10 +309,18 @@
               <td class="dsresources-growth-effect">{{{this.description}}}</td>
               <td class="dsresources-growth-action">
                 {{#if this.showSurgeButton}}
+                {{#if this.isUsed}}
+                <button type="button" class="dsresources-undo-btn" data-action="undoUsage" data-track-key="{{this.trackKey}}"
+                  title="{{localize 'DSRESOURCES.Tooltip.Undo'}}">
+                  <i class="fa-solid fa-rotate-left"></i>
+                </button>
+                {{/if}}
                 <button type="button" class="dsresources-entry-btn dsresources-entry-btn--gain dsresources-growth-surge-btn"
                   data-action="gainGrowthSurge" data-surge-amount="{{this.surgeButtonAmount}}"
                   data-table-label="{{../label}}"
-                  title="Gain {{this.surgeButtonAmount}} surge(s)">
+                  data-track-key="{{this.trackKey}}"
+                  title="Gain {{this.surgeButtonAmount}} surge(s)"
+                  {{#if this.isUsed}}disabled{{/if}}>
                   +{{this.surgeButtonAmount}}
                 </button>
                 {{/if}}

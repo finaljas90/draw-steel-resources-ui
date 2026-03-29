@@ -403,6 +403,33 @@
   filter: none;
 }
 
+/* ── Undo button (combat tracking) ─────────────────────── */
+
+.dsresources-undo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin: 0 2px 0 0;
+  border: 1px solid var(--color-border-light-2);
+  border-radius: 50%;
+  background: var(--color-shadow-primary);
+  color: var(--color-text-light-highlight);
+  font-size: 10px;
+  cursor: pointer;
+  opacity: 0.8;
+  position: relative;
+  top: -4px;
+  flex-shrink: 0;
+}
+
+.dsresources-undo-btn:hover {
+  opacity: 1;
+  background: var(--color-shadow-highlight);
+}
+
 /* ── Divider ───────────────────────────────────────────── */
 
 .dsresources-divider {
@@ -763,9 +790,15 @@
 }
 
 .dsresources-growth-action {
-  width: 50px;
+  min-width: 50px;
+  width: auto;
   text-align: center;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 2px 4px 2px 0;
 }
 
 .dsresources-growth-active {
@@ -783,6 +816,16 @@
   min-width: 0;
   background: var(--color-bg-btn, #3d6b9e);
   border-color: transparent;
+  position: relative;
+  top: 1px;
+}
+
+.dsresources-growth-action .dsresources-undo-btn {
+  top: 1px;
+  width: 18px;
+  height: 18px;
+  font-size: 9px;
+  margin: 0;
 }
 
 /* ── Growth table description (passive text) ───────────── */

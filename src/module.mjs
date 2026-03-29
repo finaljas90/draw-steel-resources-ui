@@ -22,6 +22,19 @@ Hooks.once("init", () => {
 
   Handlebars.registerHelper("eq", function (a, b) { return a === b; });
 
+  // ── Settings ─────────────────────────────────────────────────────────────
+  game.settings.register(MODULE_ID, "combatTracking", {
+    name: game.i18n.localize("DSRESOURCES.Settings.CombatTracking"),
+    hint: game.i18n.localize("DSRESOURCES.Settings.CombatTrackingHint"),
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: () => {
+      if (ResourceApp._instance?.rendered) ResourceApp._instance.render(false);
+    },
+  });
+
   log("Initialized");
 });
 
@@ -76,4 +89,26 @@ Hooks.on("updateSetting", (setting) => {
   if (setting.key === `${SYSTEM_ID}.heroTokens`) {
     ResourceApp._instance.render(false);
   }
+});
+
+// ── Combat tracking: reset used entries on turn/round changes ────────────────
+
+Hooks.on("updateCombat", (_combat, changes) => {
+  if (!_systemValid) return;
+  if (!ResourceApp._instance?.rendered) return;
+  if (!game.settings.get(MODULE_ID, "combatTracking")) return;
+
+  if (changes.round !== undefined) {
+    // New round: reset turn-scoped and round-scoped, but keep encounter-scoped
+    ResourceApp._instance.resetUsedEntries("round");
+  } else if (changes.turn !== undefined) {
+    // New turn within same round: reset only turn-scoped entries
+    ResourceApp._instance.resetUsedEntries("turn");
+  }
+});
+
+Hooks.on("deleteCombat", () => {
+  if (!_systemValid) return;
+  if (!ResourceApp._instance?.rendered) return;
+  ResourceApp._instance.resetUsedEntries("all");
 });

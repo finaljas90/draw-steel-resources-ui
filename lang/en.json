@@ -22,7 +22,8 @@
     },
     "Tooltip": {
       "Increase": "Increase by 1",
-      "Decrease": "Decrease by 1"
+      "Decrease": "Decrease by 1",
+      "Undo": "Undo"
     },
     "Chat": {
       "Gained": "gained",
@@ -40,6 +41,10 @@
       "PotencyMethod": "Increased potency by 1 for one target (2 surges)"
     },
     "SidebarButton": "Resource Tracker",
+    "Settings": {
+      "CombatTracking": "Combat Tracking",
+      "CombatTrackingHint": "When enabled, once-per-turn and once-per-round abilities are disabled after use and reset when a new combat round begins."
+    },
     "HeroToken": {
       "SurgeDesc": "Spend 1 hero token to gain 2 surges, increasing the damage or potency of an ability.",
       "SaveDesc": "Spend 1 hero token when you fail a saving throw to succeed on the save instead.",

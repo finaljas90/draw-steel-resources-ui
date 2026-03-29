@@ -62,12 +62,14 @@ const CENSOR = {
       description: "First time each combat round that a creature judged by you deals damage to you, you gain 1 wrath.",
       amount: 1,
       minLevel: 1,
+      trackUsage: "round",
     },
     {
       id: "damage-judged",
       description: "First time each combat round that you deal damage to a creature judged by you, you gain 1 wrath.",
       amount: 1,
       minLevel: 1,
+      trackUsage: "round",
     },
     {
       id: "damage-judged-lv4",
@@ -75,6 +77,7 @@ const CENSOR = {
       amount: 2,
       minLevel: 4,
       replaces: "damage-judged",
+      trackUsage: "round",
     },
   ],
 
@@ -114,6 +117,7 @@ const CENSOR = {
       description: "When a creature judged by you is reduced to 0 Stamina and you use Judgment as a free triggered action, if the new target has P < STRONG, they are [[/apply frightened save]] (save ends). If already frightened, they take [[/damage 2*@characteristics.presence.value type=holy]] holy damage.",
       cost: 1,
       minLevel: 3,
+      trackUsage: "round",
     },
   ],
 
@@ -246,6 +250,7 @@ const CONDUIT = {
       minLevel: 1,
       action: "spendX",
       spendXTitle: "Healing Grace",
+      trackUsage: "turn",
     },
     {
       id: "spend-word-of-guidance",
@@ -253,6 +258,7 @@ const CONDUIT = {
       cost: 1,
       minLevel: 1,
       requiresAbility: "Word of Guidance",
+      trackUsage: "round",
     },
     {
       id: "spend-word-of-judgment",
@@ -260,6 +266,7 @@ const CONDUIT = {
       cost: 1,
       minLevel: 1,
       requiresAbility: "Word of Judgment",
+      trackUsage: "round",
     },
     {
       id: "spend-faiths-sword",
@@ -311,6 +318,7 @@ const ELEMENTALIST = {
       description: "The first time each combat round that you or a creature within 10 squares takes damage that isn't untyped or holy damage, you gain 1 essence.",
       amount: 1,
       minLevel: 1,
+      trackUsage: "round",
     },
     {
       id: "damage-trigger-lv4",
@@ -318,6 +326,7 @@ const ELEMENTALIST = {
       amount: 2,
       minLevel: 4,
       replaces: "damage-trigger",
+      trackUsage: "round",
     },
   ],
 
@@ -337,6 +346,7 @@ const ELEMENTALIST = {
       cost: 1,
       minLevel: 1,
       requiresAbility: "Explosive Assistance",
+      trackUsage: "round",
     },
     {
       id: "spend-skin-like-castle-walls",
@@ -344,6 +354,7 @@ const ELEMENTALIST = {
       cost: 1,
       minLevel: 1,
       requiresAbility: "Skin Like Castle Walls",
+      trackUsage: "round",
     },
     {
       id: "spend-breath-of-dawn",
@@ -354,6 +365,7 @@ const ELEMENTALIST = {
       requiresAbility: "Breath of Dawn Remembered",
       action: "spendX",
       spendXTitle: "Breath of Dawn",
+      trackUsage: "round",
     },
     {
       id: "spend-subtle-relocation",
@@ -361,6 +373,7 @@ const ELEMENTALIST = {
       cost: 1,
       minLevel: 1,
       requiresAbility: "Subtle Relocation",
+      trackUsage: "round",
     },
   ],
 
@@ -414,6 +427,7 @@ const FURY = {
       description: "The first time each combat round that you take damage, you gain 1 ferocity.",
       amount: 1,
       minLevel: 1,
+      trackUsage: "round",
     },
     {
       id: "damage-trigger-lv4",
@@ -421,6 +435,7 @@ const FURY = {
       amount: 2,
       minLevel: 4,
       replaces: "damage-trigger",
+      trackUsage: "round",
     },
     {
       id: "damage-trigger-lv10",
@@ -428,6 +443,7 @@ const FURY = {
       amount: 3,
       minLevel: 10,
       replaces: "damage-trigger-lv4",
+      trackUsage: "round",
     },
     {
       id: "winded-dying",
@@ -435,6 +451,7 @@ const FURY = {
       amount: "1d3",
       minLevel: 1,
       action: "roll",
+      trackUsage: "encounter",
     },
   ],
 
@@ -446,6 +463,7 @@ const FURY = {
       cost: 1,
       minLevel: 1,
       requiresSubclass: "Berserker",
+      trackUsage: "round",
     },
     {
       id: "spend-unearthly-reflexes",
@@ -453,6 +471,7 @@ const FURY = {
       cost: 1,
       minLevel: 1,
       requiresSubclass: "Reaver",
+      trackUsage: "round",
     },
     {
       id: "spend-furious-change",
@@ -460,6 +479,7 @@ const FURY = {
       cost: 1,
       minLevel: 1,
       requiresSubclass: "Stormwight",
+      trackUsage: "round",
     },
     {
       id: "spend-aspect-wild",
@@ -486,9 +506,9 @@ const FURY = {
       requiresSubclass: "Berserker",
       rows: [
         { threshold: 2, description: "Whenever you use the Knockback maneuver, the forced movement distance gains a bonus equal to your Might score ([[@characteristics.might.value]]).", minLevel: 1 },
-        { threshold: 4, description: "The first time you push a creature on a turn, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "push" },
+        { threshold: 4, description: "The first time you push a creature on a turn, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "push", trackUsage: "turn" },
         { threshold: 6, description: "You gain an edge on Might tests and the Knockback maneuver.", minLevel: 1 },
-        { threshold: 8, description: "The first time you push a creature on a turn, you gain 2 surges.", minLevel: 4, grantsSurge: 2, surgeGroup: "push" },
+        { threshold: 8, description: "The first time you push a creature on a turn, you gain 2 surges.", minLevel: 4, grantsSurge: 2, surgeGroup: "push", trackUsage: "turn" },
         { threshold: 10, description: "You have a double edge on Might tests and the Knockback maneuver.", minLevel: 7 },
         { threshold: 12, description: "Whenever you use a heroic ability, you gain [[/heal 10 type=temporary]]. Additionally, whenever you make a power roll that imposes forced movement on a target, the forced movement distance gains a bonus equal to your Might score ([[@characteristics.might.value]]).", minLevel: 10 },
       ],
@@ -499,9 +519,9 @@ const FURY = {
       requiresSubclass: "Reaver",
       rows: [
         { threshold: 2, description: "Whenever you use the Knockback maneuver, the forced movement distance gains a bonus equal to your Agility score ([[@characteristics.agility.value]]).", minLevel: 1 },
-        { threshold: 4, description: "The first time you slide a creature on a turn, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "slide" },
+        { threshold: 4, description: "The first time you slide a creature on a turn, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "slide", trackUsage: "turn" },
         { threshold: 6, description: "You gain an edge on Agility tests and the Knockback maneuver.", minLevel: 1 },
-        { threshold: 8, description: "The first time you slide a creature on a turn, you gain 2 surges instead of 1.", minLevel: 4, grantsSurge: 2, surgeGroup: "slide" },
+        { threshold: 8, description: "The first time you slide a creature on a turn, you gain 2 surges instead of 1.", minLevel: 4, grantsSurge: 2, surgeGroup: "slide", trackUsage: "turn" },
         { threshold: 10, description: "You have a double edge on Agility tests and the Knockback maneuver.", minLevel: 7 },
         { threshold: 12, description: "Whenever you use a heroic ability, you gain [[/heal 10 type=temporary]]. Additionally, whenever you make a power roll that imposes forced movement on a target, the forced movement distance gains a bonus equal to your Agility score ([[@characteristics.agility.value]]).", minLevel: 10 },
       ],
@@ -513,9 +533,9 @@ const FURY = {
       requiresKit: "Boren",
       rows: [
         { threshold: 2, description: "You can have up to two creatures grabbed at a time. Additionally, whenever you make a strike against a creature you have grabbed, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "strike-grab" },
-        { threshold: 4, description: "The first time you grab a creature on a turn, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "grab" },
+        { threshold: 4, description: "The first time you grab a creature on a turn, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "grab", trackUsage: "turn" },
         { threshold: 6, description: "You gain an edge on the Grab and Knockback maneuvers.", minLevel: 1 },
-        { threshold: 8, description: "The first time you grab a creature on a turn, you gain 2 surges instead of 1.", minLevel: 4, grantsSurge: 2, surgeGroup: "grab" },
+        { threshold: 8, description: "The first time you grab a creature on a turn, you gain 2 surges instead of 1.", minLevel: 4, grantsSurge: 2, surgeGroup: "grab", trackUsage: "turn" },
         { threshold: 10, description: "You have a double edge on the Grab and Knockback maneuvers.", minLevel: 7 },
         { threshold: 12, description: "Whenever you use a heroic ability, you gain [[/heal 10 type=temporary]]. Additionally, whenever you have a creature grabbed, any ability roll made against that creature gains a bonus to its potency equal to your Might score ([[@characteristics.might.value]]).", minLevel: 10 },
       ],
@@ -527,9 +547,9 @@ const FURY = {
       requiresKit: "Corven",
       rows: [
         { threshold: 2, description: "Whenever you use the Disengage move action, the distance you can shift gains a bonus equal to your Agility score ([[@characteristics.agility.value]]).", minLevel: 1 },
-        { threshold: 4, description: "The first time you shift on a turn, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "shift" },
+        { threshold: 4, description: "The first time you shift on a turn, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "shift", trackUsage: "turn" },
         { threshold: 6, description: "You gain an edge on Agility tests, the Escape Grab maneuver, and the Knockback maneuver.", minLevel: 1 },
-        { threshold: 8, description: "The first time you shift on a turn, you gain 2 surges instead of 1.", minLevel: 4, grantsSurge: 2, surgeGroup: "shift" },
+        { threshold: 8, description: "The first time you shift on a turn, you gain 2 surges instead of 1.", minLevel: 4, grantsSurge: 2, surgeGroup: "shift", trackUsage: "turn" },
         { threshold: 10, description: "You have a double edge on Agility tests, the Escape Grab maneuver, and the Knockback maneuver.", minLevel: 7 },
         { threshold: 12, description: "Whenever you use a heroic ability, you gain [[/heal 10 type=temporary]]. Additionally, the potency of any effects targeting you is reduced by 2 for you.", minLevel: 10 },
       ],
@@ -541,9 +561,9 @@ const FURY = {
       requiresKit: "Raden",
       rows: [
         { threshold: 2, description: "Whenever you use the Disengage move action, the distance you can shift gains a bonus equal to your Agility score ([[@characteristics.agility.value]]).", minLevel: 1 },
-        { threshold: 4, description: "The first time you shift on a turn, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "shift" },
+        { threshold: 4, description: "The first time you shift on a turn, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "shift", trackUsage: "turn" },
         { threshold: 6, description: "You gain an edge on Agility tests, the Escape Grab maneuver, and the Knockback maneuver.", minLevel: 1 },
-        { threshold: 8, description: "The first time you shift on a turn, you gain 2 surges instead of 1.", minLevel: 4, grantsSurge: 2, surgeGroup: "shift" },
+        { threshold: 8, description: "The first time you shift on a turn, you gain 2 surges instead of 1.", minLevel: 4, grantsSurge: 2, surgeGroup: "shift", trackUsage: "turn" },
         { threshold: 10, description: "You have a double edge on Agility tests, the Escape Grab maneuver, and the Knockback maneuver.", minLevel: 7 },
         { threshold: 12, description: "Whenever you use a heroic ability, you gain [[/heal 10 type=temporary]]. Additionally, the potency of any effects targeting you is reduced by 2 for you.", minLevel: 10 },
       ],
@@ -555,9 +575,9 @@ const FURY = {
       requiresKit: "Vuken",
       rows: [
         { threshold: 2, description: "Whenever you use the Knockback maneuver, you can target one additional creature.", minLevel: 1 },
-        { threshold: 4, description: "The first time on a turn that you push a creature or knock a creature prone, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "push-prone" },
+        { threshold: 4, description: "The first time on a turn that you push a creature or knock a creature prone, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "push-prone", trackUsage: "turn" },
         { threshold: 6, description: "You gain an edge on Agility tests and the Knockback maneuver.", minLevel: 1 },
-        { threshold: 8, description: "The first time on a turn that you push a creature or knock a creature prone, you gain 2 surges.", minLevel: 4, grantsSurge: 2, surgeGroup: "push-prone" },
+        { threshold: 8, description: "The first time on a turn that you push a creature or knock a creature prone, you gain 2 surges.", minLevel: 4, grantsSurge: 2, surgeGroup: "push-prone", trackUsage: "turn" },
         { threshold: 10, description: "You have a double edge on Agility tests and the Knockback maneuver.", minLevel: 7 },
         { threshold: 12, description: "Whenever you use a heroic ability, you gain [[/heal 10 type=temporary]]. Additionally, whenever you make a power roll that imposes forced movement on a target, the forced movement distance gains a bonus equal to your Agility score ([[@characteristics.agility.value]]).", minLevel: 10 },
       ],
@@ -603,6 +623,7 @@ const NULL = {
       description: "The first time each combat round that an enemy in the area of your Null Field uses a main action, you gain 1 discipline.",
       amount: 1,
       minLevel: 1,
+      trackUsage: "round",
     },
     {
       id: "null-field-trigger-lv4",
@@ -610,12 +631,14 @@ const NULL = {
       amount: 2,
       minLevel: 4,
       replaces: "null-field-trigger",
+      trackUsage: "round",
     },
     {
       id: "malice-trigger",
       description: "The first time each combat round that the Director uses an ability that costs Malice, you gain 1 discipline.",
       amount: 1,
       minLevel: 1,
+      trackUsage: "round",
     },
   ],
 
@@ -625,12 +648,14 @@ const NULL = {
       description: "<strong>Null Field</strong> (free maneuver, once per turn): Give your Null Field one additional effect until the start of your next turn:<ul><li><strong>Gravitic Disruption:</strong> The first time on a turn that a target takes damage, you can slide them up to 2 squares.</li><li><strong>Inertial Anchor:</strong> Any target who starts their turn in the area can't shift.</li><li><strong>Synaptic Break:</strong> Whenever you or any ally uses an ability against a target that has a potency effect, the potency is increased by 1.</li></ul>",
       cost: 1,
       minLevel: 1,
+      trackUsage: "turn",
     },
     {
       id: "spend-inertial-shield",
       description: "<strong>Inertial Shield</strong> (triggered, when you take damage): You take half the damage. Spend 1 discipline to reduce the potency of one effect associated with the damage by 1 for you.",
       cost: 1,
       minLevel: 1,
+      trackUsage: "round",
     },
     {
       id: "spend-instant-action",
@@ -700,9 +725,9 @@ const NULL = {
       description: "Whenever you use Inertial Shield, you can use the Disengage move action as a free triggered action.",
       rows: [
         { threshold: 2, description: "Whenever you use the Knockback maneuver, you can use the Disengage move action as a free triggered action either before or after the maneuver.", minLevel: 1 },
-        { threshold: 4, description: "The first time on a turn that you willingly move 1 or more squares as part of an ability, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "move" },
+        { threshold: 4, description: "The first time on a turn that you willingly move 1 or more squares as part of an ability, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "move", trackUsage: "turn" },
         { threshold: 6, description: "You gain an edge on the Grab and Knockback maneuvers.", minLevel: 1 },
-        { threshold: 8, description: "The first time on a turn that you willingly move 1 or more squares as part of an ability, you gain 2 surges.", minLevel: 4, grantsSurge: 2, surgeGroup: "move" },
+        { threshold: 8, description: "The first time on a turn that you willingly move 1 or more squares as part of an ability, you gain 2 surges.", minLevel: 4, grantsSurge: 2, surgeGroup: "move", trackUsage: "turn" },
         { threshold: 10, description: "You have a double edge on the Grab and Knockback maneuvers.", minLevel: 7 },
         { threshold: 12, description: "Whenever you force move a target, the forced movement distance gains a bonus equal to your Intuition score ([[@characteristics.intuition.value]]). Additionally, whenever you use a heroic ability, you gain [[/heal 10 type=temporary]].", minLevel: 10 },
       ],
@@ -714,9 +739,9 @@ const NULL = {
       description: "Whenever you use Inertial Shield, you can use the Grab maneuver as a free triggered action.",
       rows: [
         { threshold: 2, description: "Whenever you use the Knockback maneuver, you can target one additional creature. Additionally, whenever you deal untyped damage with a psionic ability, you can change it to cold damage instead.", minLevel: 1 },
-        { threshold: 4, description: "The first time on a turn that you grab a creature or an enemy moves 1 or more squares in the area of your Null Field, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "grab-move" },
+        { threshold: 4, description: "The first time on a turn that you grab a creature or an enemy moves 1 or more squares in the area of your Null Field, you gain 1 surge.", minLevel: 1, grantsSurge: 1, surgeGroup: "grab-move", trackUsage: "turn" },
         { threshold: 6, description: "You gain an edge on the Grab and Knockback maneuvers.", minLevel: 1 },
-        { threshold: 8, description: "The first time on a turn that you grab a creature or an enemy moves 1 or more squares in the area of your Null Field, you gain 2 surges.", minLevel: 4, grantsSurge: 2, surgeGroup: "grab-move" },
+        { threshold: 8, description: "The first time on a turn that you grab a creature or an enemy moves 1 or more squares in the area of your Null Field, you gain 2 surges.", minLevel: 4, grantsSurge: 2, surgeGroup: "grab-move", trackUsage: "turn" },
         { threshold: 10, description: "You have a double edge on the Grab and Knockback maneuvers.", minLevel: 7 },
         { threshold: 12, description: "Whenever you force move a target, the forced movement distance gains a bonus equal to your Intuition score ([[@characteristics.intuition.value]]). Additionally, whenever you use a heroic ability, you gain [[/heal 10 type=temporary]].", minLevel: 10 },
       ],
@@ -728,9 +753,9 @@ const NULL = {
       description: "Whenever you use Inertial Shield, you can use the Knockback maneuver as a free triggered action.",
       rows: [
         { threshold: 2, description: "Whenever you use the Knockback maneuver, the forced movement distance gains a bonus equal to your Intuition score ([[@characteristics.intuition.value]]).", minLevel: 1 },
-        { threshold: 4, description: "The first time in a combat round that you take damage or are force moved, you gain 1 surge, even if you resist the effect.", minLevel: 1, grantsSurge: 1, surgeGroup: "damage-forcemove" },
+        { threshold: 4, description: "The first time in a combat round that you take damage or are force moved, you gain 1 surge, even if you resist the effect.", minLevel: 1, grantsSurge: 1, surgeGroup: "damage-forcemove", trackUsage: "round" },
         { threshold: 6, description: "You gain an edge on the Grab and Knockback maneuvers.", minLevel: 1 },
-        { threshold: 8, description: "The first time in a combat round that you take damage or are force moved, you gain 2 surges, even if you resist the effect.", minLevel: 4, grantsSurge: 2, surgeGroup: "damage-forcemove" },
+        { threshold: 8, description: "The first time in a combat round that you take damage or are force moved, you gain 2 surges, even if you resist the effect.", minLevel: 4, grantsSurge: 2, surgeGroup: "damage-forcemove", trackUsage: "round" },
         { threshold: 10, description: "You have a double edge on the Grab and Knockback maneuvers.", minLevel: 7 },
         { threshold: 12, description: "Whenever you force move a target, the forced movement distance gains a bonus equal to your Intuition score ([[@characteristics.intuition.value]]). Additionally, whenever you use a heroic ability, you gain [[/heal 10 type=temporary]].", minLevel: 10 },
       ],
@@ -771,6 +796,7 @@ const SHADOW = {
       description: "The first time each combat round that you deal damage incorporating 1 or more surges, you gain 1 insight.",
       amount: 1,
       minLevel: 1,
+      trackUsage: "round",
     },
     {
       id: "surge-damage-trigger-lv4",
@@ -778,6 +804,7 @@ const SHADOW = {
       amount: 2,
       minLevel: 4,
       replaces: "surge-damage-trigger",
+      trackUsage: "round",
     },
     {
       id: "surge-damage-trigger-lv10",
@@ -785,6 +812,7 @@ const SHADOW = {
       amount: 3,
       minLevel: 10,
       replaces: "surge-damage-trigger-lv4",
+      trackUsage: "round",
     },
     // Edge Discount, gain 1 insight to account for the discount
     {
@@ -831,6 +859,7 @@ const SHADOW = {
       cost: 1,
       minLevel: 1,
       requiresSubclass: "Harlequin Mask",
+      trackUsage: "round",
     },
     {
       id: "spend-defensive-roll",
@@ -838,6 +867,7 @@ const SHADOW = {
       cost: 1,
       minLevel: 1,
       requiresSubclass: "Caustic Alchemy",
+      trackUsage: "round",
     },
     {
       id: "spend-in-all-this-confusion",
@@ -847,6 +877,7 @@ const SHADOW = {
       requiresSubclass: "Black Ash",
       action: "spendX",
       spendXTitle: "In All This Confusion",
+      trackUsage: "round",
     },
     // Class Feature, Hesitation Is Weakness
     {
@@ -854,6 +885,7 @@ const SHADOW = {
       description: "<strong>Hesitation Is Weakness</strong> (free triggered action)<br><em>Trigger: Another hero ends their turn. That hero can't have used this ability to start their turn.</em><br>You take your turn after the triggering hero.",
       cost: 1,
       minLevel: 1,
+      trackUsage: "round",
     },
     // Level 8, Time Bomb (Caustic Alchemy)
     {
@@ -867,6 +899,7 @@ const SHADOW = {
       spendXStep: 2,
       grantsSurgePerSpend: true,
       spendXDetail: "Time Bomb, Spent {spendAmount} insight. Cube size +{cubeIncrease}, gained {surgesGained} surge(s).",
+      trackUsage: "round",
     },
   ],
 
@@ -909,6 +942,7 @@ const TACTICIAN = {
       description: "The first time each combat round that you or any ally damages a creature marked by you, you gain 1 focus.",
       amount: 1,
       minLevel: 1,
+      trackUsage: "round",
     },
     {
       id: "mark-damage-trigger-lv4",
@@ -916,12 +950,14 @@ const TACTICIAN = {
       amount: 2,
       minLevel: 4,
       replaces: "mark-damage-trigger",
+      trackUsage: "round",
     },
     {
       id: "ally-heroic-trigger",
       description: "The first time each combat round that any ally within 10 squares of you uses a heroic ability, you gain 1 focus.",
       amount: 1,
       minLevel: 1,
+      trackUsage: "round",
     },
   ],
 
@@ -929,7 +965,7 @@ const TACTICIAN = {
     // Mark, base triggered action
     {
       id: "spend-mark",
-      description: "<strong>Mark</strong> (free triggered action, when you or any ally deals rolled damage to a creature marked by you): Spend 1 focus for one benefit (one per trigger):<ul><li>The ability deals extra damage equal to twice your Reason score ([[/damage 2*@characteristics.reason.value]]).</li><li>The creature dealing the damage can spend a Recovery.</li><li>The creature dealing the damage can shift up to [[@characteristics.reason.value]] squares.</li></ul>",
+      description: "<strong>Mark</strong> (free triggered action, when you or any ally deals rolled damage to a creature marked by you): Spend 1 focus for one benefit (one benefit per trigger):<ul><li>The ability deals extra damage equal to twice your Reason score ([[/damage 2*@characteristics.reason.value]]).</li><li>The creature dealing the damage can spend a Recovery.</li><li>The creature dealing the damage can shift up to [[@characteristics.reason.value]] squares.</li></ul>",
       cost: 1,
       minLevel: 1,
     },
@@ -948,6 +984,7 @@ const TACTICIAN = {
       cost: 1,
       minLevel: 1,
       requiresSubclass: "Insurgent",
+      trackUsage: "round",
     },
     {
       id: "spend-overwatch",
@@ -955,6 +992,7 @@ const TACTICIAN = {
       cost: 1,
       minLevel: 1,
       requiresSubclass: "Mastermind",
+      trackUsage: "round",
     },
     {
       id: "spend-parry",
@@ -962,6 +1000,7 @@ const TACTICIAN = {
       cost: 1,
       minLevel: 1,
       requiresSubclass: "Vanguard",
+      trackUsage: "round",
     },
     // Level 2 Mark Benefits, Doctrine
     {
@@ -1064,6 +1103,7 @@ const TALENT = {
       description: "The first time each combat round that a creature is force moved, you gain 1 clarity.",
       amount: 1,
       minLevel: 1,
+      trackUsage: "round",
     },
     {
       id: "force-move-trigger-lv4",
@@ -1071,6 +1111,7 @@ const TALENT = {
       amount: 2,
       minLevel: 4,
       replaces: "force-move-trigger",
+      trackUsage: "round",
     },
     {
       id: "force-move-trigger-lv10",
@@ -1078,6 +1119,7 @@ const TALENT = {
       amount: 3,
       minLevel: 10,
       replaces: "force-move-trigger-lv4",
+      trackUsage: "round",
     },
     // Level 4, Mind Recovery (spends a Recovery to gain 3 clarity)
     {
@@ -1130,10 +1172,11 @@ const TALENT = {
       cost: 2,
       minLevel: 5,
       requiresAbility: "Speed of Thought",
+      trackUsage: "round",
     },
     {
       id: "spend-triangulate",
-      description: "<strong>Triangulate</strong> (Telekinesis): As a free triggered action, allow an ally using a ranged ability while within its distance to use the ability as if they were in your space.",
+      description: "<strong>Triangulate</strong> (Telekinesis): Whenever an ally uses a ranged ability while you are within the ability's distance, you can spend 1 clarity as a free triggered action to allow them to use the ability as if they were in your space.",
       cost: 1,
       minLevel: 5,
       requiresAbility: "Triangulate",
@@ -1233,12 +1276,14 @@ const TROUBADOUR = {
       description: "The first time three or more heroes use an ability on the same turn, you gain 2 drama.",
       amount: 2,
       minLevel: 1,
+      trackUsage: "encounter",
     },
     {
       id: "winded-trigger",
       description: "The first time any hero is made winded during the encounter, you gain 2 drama.",
       amount: 2,
       minLevel: 1,
+      trackUsage: "encounter",
     },
     {
       id: "natural-19-20-trigger",
@@ -1277,18 +1322,21 @@ const TROUBADOUR = {
           description: "The first time the Director deals damage to a hero using a Villain action or an ability that costs Malice, you gain 2 drama.",
           amount: 2,
           minLevel: 4,
+          trackUsage: "encounter",
         },
         {
           id: "melodrama-fall",
           description: "The first time a hero unwillingly falls 5 or more squares, you gain 2 drama.",
           amount: 2,
           minLevel: 4,
+          trackUsage: "encounter",
         },
         {
           id: "melodrama-3-surges",
           description: "The first time a hero deals damage with 3 surges, you gain 2 drama.",
           amount: 2,
           minLevel: 4,
+          trackUsage: "encounter",
         },
         {
           id: "melodrama-last-recovery",
@@ -1325,6 +1373,7 @@ const TROUBADOUR = {
       requiresSubclass: "Virtuoso",
       action: "spendX",
       spendXTitle: "Harmonize",
+      trackUsage: "round",
     },
     {
       id: "spend-riposte",
@@ -1339,6 +1388,7 @@ const TROUBADOUR = {
       cost: 3,
       minLevel: 1,
       requiresSubclass: "Auteur",
+      trackUsage: "round",
     },
     // Signature Abilities
     {
