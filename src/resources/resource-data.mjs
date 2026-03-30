@@ -965,7 +965,7 @@ const TACTICIAN = {
     // Mark, base triggered action
     {
       id: "spend-mark",
-      description: "<strong>Mark</strong> (free triggered action, when you or any ally deals rolled damage to a creature marked by you): Spend 1 focus for one benefit (one benefit per trigger):<ul><li>The ability deals extra damage equal to twice your Reason score ([[/damage 2*@characteristics.reason.value]]).</li><li>The creature dealing the damage can spend a Recovery.</li><li>The creature dealing the damage can shift up to [[@characteristics.reason.value]] squares.</li></ul>",
+      description: "<strong>Mark</strong> (free triggered action, when you or any ally deals rolled damage to a creature marked by you): Spend 1 focus for one benefit (one benefit per trigger):<ul><li>The ability deals extra damage equal to 1 + your Reason score. ([[/damage 1+@characteristics.reason.value]]).</li><li>The creature dealing the damage can spend a Recovery.</li><li>The creature dealing the damage can shift up to [[@characteristics.reason.value]] squares.</li></ul>",
       cost: 1,
       minLevel: 1,
     },
