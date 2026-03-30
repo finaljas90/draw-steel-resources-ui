@@ -988,7 +988,7 @@ const TACTICIAN = {
     },
     {
       id: "spend-overwatch",
-      description: "<strong>Overwatch</strong> (Mastermind)<br><em>Trigger: A creature within 10 moves.</em><br>Effect: At any time during the target's movement, one ally can make a free strike against them.<br><strong>Spend 1 Focus:</strong> If the target has R < AVERAGE, they are slowed (EoT).",
+      description: "<strong>Overwatch</strong> (Mastermind)<br><em>Trigger: The target moves into a square adjacent to an ally.</em><br>Effect: The target’s speed is reduced to 0 until the end of the current turn.<br><strong>Spend 1 Focus:</strong> The ally can make a melee free strike against the target.",
       cost: 1,
       minLevel: 1,
       requiresSubclass: "Mastermind",
@@ -1018,9 +1018,9 @@ const TACTICIAN = {
       requiresSubclass: "Insurgent",
     },
     {
-      id: "spend-targets-of-opportunity",
-      description: "<strong>Targets of Opportunity</strong> (Mastermind, Mark Benefit): Until the end of the encounter, whenever you or any ally makes a strike against a creature marked by you, add one additional target to the strike.",
-      cost: 2,
+      id: "spend-goaded",
+      description: "<strong>Goaded</strong> (Mastermind, Mark Benefit): Whenever a creature marked by you uses a strike that targets you or any ally within your line of effect, you can use a free triggered action and spend 1 focus to change the target of the strike to you or another ally within your line of effect.",
+      cost: 1,
       minLevel: 2,
       requiresSubclass: "Mastermind",
     },
@@ -1476,7 +1476,6 @@ const GUNSLINGER = {
       description: "The first time in an encounter that any hero spends their heroic resource down to exactly 0, you gain 1d3 Nerve.",
       amount: "1d3",
       minLevel: 1,
-      trackUsage: "round",
     },
   ],
 
