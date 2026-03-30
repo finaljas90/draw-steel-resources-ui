@@ -793,7 +793,7 @@ const SHADOW = {
     },
     {
       id: "surge-damage-trigger",
-      description: "The first time each combat round that you deal damage incorporating 1 or more surges, you gain 1 insight.",
+      description: "The first time each combat round that you deal damage incorporating 1 or more surges, you gain 1 insight..",
       amount: 1,
       minLevel: 1,
       trackUsage: "round",
@@ -817,7 +817,7 @@ const SHADOW = {
     // Edge Discount, gain 1 insight to account for the discount
     {
       id: "edge-discount",
-      description: "<strong>Edge Discount:</strong> Whenever you use a heroic ability that makes a power roll, that ability costs 1 fewer insight if you have an edge or double edge on it. If the ability has multiple targets, the cost is reduced even if the edge applies to only one target.",
+      description: "<strong>Edge Discount:</strong> The first time in a combat round that you use an ability with an edge or double edge, if it’s a heroic ability, it costs 1 less. Otherwise, you gain 1 insight.",
       amount: 1,
       minLevel: 1,
     },
