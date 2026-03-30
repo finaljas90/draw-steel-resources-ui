@@ -1474,7 +1474,7 @@ const GUNSLINGER = {
     {
       id: "reduces-resource-to-zero",
       description: "The first time in an encounter that any hero spends their heroic resource down to exactly 0, you gain 1d3 Nerve.",
-      amount: 1d3,
+      amount: "1d3",
       minLevel: 1,
       trackUsage: "round",
     },
