@@ -43,7 +43,9 @@
     "SidebarButton": "Resource Tracker",
     "Settings": {
       "CombatTracking": "Combat Tracking",
-      "CombatTrackingHint": "When enabled, once-per-turn and once-per-round abilities are disabled after use and reset when a new combat round begins."
+      "CombatTrackingHint": "When enabled, once-per-turn and once-per-round abilities are disabled after use and reset when a new combat round begins.",
+      "DiceAnimation": "Dice Animation",
+      "DiceAnimationHint": "When enabled, heroic resource dice rolls trigger a 3D dice animation (requires the Dice So Nice module)."
     },
     "HeroToken": {
       "SurgeDesc": "Spend 1 hero token to gain 2 surges, increasing the damage or potency of an ability.",
