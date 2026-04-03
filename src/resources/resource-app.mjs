@@ -622,7 +622,8 @@ export class ResourceApp extends foundry.applications.api.HandlebarsApplicationM
             ${resourceName}: ${result.previous} → ${result.current}
           </div>
         </div>`;
-      await ChatMessage.create({ user: game.user.id, speaker, content });
+      const diceAnim = game.settings.get(MODULE_ID, "diceAnimation");
+      await ChatMessage.create({ user: game.user.id, speaker, content, ...(diceAnim && { rolls: [roll] }) });
     } else if (entry.action === "domain") {
       // Domain gain, append the domain condition trigger text
       const domains = actor.items.filter((i) => i.type === "subclass");
