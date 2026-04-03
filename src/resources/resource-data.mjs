@@ -59,7 +59,7 @@ const CENSOR = {
     },
     {
       id: "judged-damages-you",
-      description: "First time each combat round that a creature judged by you deals damage to you, you gain 1 wrath.",
+      description: "First time each combat round that a creature judged by you uses a main action, you gain 1 wrath.",
       amount: 1,
       minLevel: 1,
       trackUsage: "round",
