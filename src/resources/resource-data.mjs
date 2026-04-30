@@ -59,7 +59,7 @@ const CENSOR = {
     },
     {
       id: "judged-damages-you",
-      description: "First time each combat round that a creature judged by you uses a main action, you gain 1 wrath.",
+      description: "First time each combat round that a creature judged by you deals damage to you, you gain 1 wrath.",
       amount: 1,
       minLevel: 1,
       trackUsage: "round",
@@ -793,7 +793,7 @@ const SHADOW = {
     },
     {
       id: "surge-damage-trigger",
-      description: "The first time each combat round that you deal damage incorporating 1 or more surges, you gain 1 insight..",
+      description: "The first time each combat round that you deal damage incorporating 1 or more surges, you gain 1 insight.",
       amount: 1,
       minLevel: 1,
       trackUsage: "round",
@@ -1020,7 +1020,7 @@ const TACTICIAN = {
     {
       id: "spend-goaded",
       description: "<strong>Goaded</strong> (Mastermind, Mark Benefit): Whenever a creature marked by you uses a strike that targets you or any ally within your line of effect, you can use a free triggered action and spend 1 focus to change the target of the strike to you or another ally within your line of effect.",
-      cost: 1,
+      cost: 2,
       minLevel: 2,
       requiresSubclass: "Mastermind",
     },
@@ -1453,56 +1453,6 @@ const TROUBADOUR = {
   passiveEffects: [],
 };
 
-const GUNSLINGER = {
-  id: "gunslinger",
-  className: "Gunslinger",
-  resourceName: "Nerve",
-
-  gains: [
-    {
-      id: "combat-start",
-      description: "At the start of combat, gain nerve equal to your Victories.",
-      amount: "victories",
-      minLevel: 1,
-    },
-    {
-      id: "turn-start",
-      description: "At the start of each of your turns during combat, you gain 2 nerve.",
-      amount: 2,
-      minLevel: 1,
-    },
-    {
-      id: "reduces-resource-to-zero",
-      description: "The first time in an encounter that any hero spends their heroic resource down to exactly 0, you gain 1d3 Nerve.",
-      amount: "1d3",
-      minLevel: 1,
-    },
-  ],
-
-  spends: [
-    {
-      id: "spend-quickload",
-      description: " Gain 1 bullet for every nerve spent. These bullets can be used to pay for the ability that triggered All In. If you spend at least 3 nerve this way, you may reload your bullets immediately after the ability resolves.",
-      cost: 1,
-      minLevel: 1,
-    },
-    {
-      id: "spend-shoot-to-kill",
-      description: "Gain 1 surge for every nerve spent, which can be used on the triggering ability. If you spend at least 3 nerve this way, the ability which triggered this outlet has no limit for the number of surges that can be spent on it, but cannot be declared a non-lethal attack.",
-      cost: 1,
-      minLevel: 1,
-    },
-    {
-      id: "spend-been-through-worse",
-      description: "Spend 1 recovery for every nerve spent.",
-      cost: 1,
-      minLevel: 1,
-    },
-  ],
-
-  passiveEffects: [],
-};
-
 // ── Registry ─────────────────────────────────────────────────────────────────
 
 /** All built-in class definitions, keyed by lowercase class name. */
@@ -1516,7 +1466,6 @@ export const CLASS_DEFINITIONS = {
   tactician:    TACTICIAN,
   talent:       TALENT,
   troubadour:   TROUBADOUR,
-  gunslinger:   GUNSLINGER,
 };
 
 /**
