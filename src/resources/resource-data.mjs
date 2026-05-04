@@ -59,21 +59,21 @@ const CENSOR = {
     },
     {
       id: "judged-damages-you",
-      description: "First time each combat round that a creature judged by you deals damage to you, you gain 1 wrath.",
+      description: "Additionally, the first time each combat round that your warded ally takes damage or spends a recovery, you gain 1 wrath.",
       amount: 1,
       minLevel: 1,
       trackUsage: "round",
     },
     {
       id: "damage-judged",
-      description: "First time each combat round that you deal damage to a creature judged by you, you gain 1 wrath.",
+      description: "The first time each combat round that you target an ally with an ability, you gain 1 wrath.",
       amount: 1,
       minLevel: 1,
       trackUsage: "round",
     },
     {
       id: "damage-judged-lv4",
-      description: "First time each combat round that you deal damage to a creature judged by you, you gain 2 wrath.",
+      description: "The first time each combat round that you target an ally with an ability, you gain 2 wrath.",
       amount: 2,
       minLevel: 4,
       replaces: "damage-judged",
@@ -84,37 +84,37 @@ const CENSOR = {
   spends: [
     {
       id: "spend-free-strike",
-      description: "When an adjacent creature judged by you starts to shift, make a melee free strike against them and their speed becomes 0 until end of turn. [[/apply slowed turn]]",
+      description: "When a warded ally would become dying, they may spend a recovery.",
       cost: 1,
       minLevel: 1,
     },
     {
       id: "spend-bane",
-      description: "When a creature judged by you within 10 squares makes a power roll, cause them to take a bane.",
+      description: "When a warded ally would be affected by a potency effect, the potency is reduced by 1.",
       cost: 1,
       minLevel: 1,
     },
     {
       id: "spend-reduce-potency",
-      description: "When a creature judged by you within 10 squares uses an ability with potency targeting one creature, reduce potency by 1.",
+      description: "When a warded ally would move, they may shift instead, ignoring difficult terrain.",
       cost: 1,
       minLevel: 1,
     },
     {
       id: "spend-taunt",
-      description: "If you damage a creature judged by you with a melee ability, the creature is [[/apply taunted turn]] by you until end of their next turn.",
+      description: "When a creature warded by you within 10 squares makes a power roll, you cause them to gain an edge on the roll.",
       cost: 1,
       minLevel: 1,
     },
     {
       id: "spend-judgment-frighten",
-      description: "When you use Judgment, if the target has P < AVERAGE, they are [[/apply frightened save]] of you (save ends).",
-      cost: 1,
+      description: "When you use Aegis, if the target dying, they may end one effect on a target that is ended by a saving throw or that ends at the end of their turn.",
+      cost: 0,
       minLevel: 3,
     },
     {
       id: "spend-judgment-chain-frighten",
-      description: "When a creature judged by you is reduced to 0 Stamina and you use Judgment as a free triggered action, if the new target has P < STRONG, they are [[/apply frightened save]] (save ends). If already frightened, they take [[/damage 2*@characteristics.presence.value type=holy]] holy damage.",
+      description: "When you use your Aegis ability on a new target, if the target is winded, they may end one effect on a target that is ended by a saving throw or that ends at the end of their turn. If the target has no effects that can be removed, they instead gain temporary stamina equal to twice your Presence score. [[/heal temp 6]]",
       cost: 1,
       minLevel: 3,
       trackUsage: "round",
@@ -817,7 +817,7 @@ const SHADOW = {
     // Edge Discount, gain 1 insight to account for the discount
     {
       id: "edge-discount",
-      description: "<strong>Edge Discount:</strong> Whenever you use a heroic ability that makes a power roll, that ability costs 1 fewer insight if you have an edge or double edge on it. If the ability has multiple targets, the cost is reduced even if the edge applies to only one target.",
+      description: "<strong>Edge Discount:</strong> The first time in a combat round that you use an ability with an edge or double edge, if it’s a heroic ability, it costs 1 less. Otherwise, you gain 1 insight.",
       amount: 1,
       minLevel: 1,
     },
@@ -965,7 +965,7 @@ const TACTICIAN = {
     // Mark, base triggered action
     {
       id: "spend-mark",
-      description: "<strong>Mark</strong> (free triggered action, when you or any ally deals rolled damage to a creature marked by you): Spend 1 focus for one benefit (one benefit per trigger):<ul><li>The ability deals extra damage equal to twice your Reason score ([[/damage 2*@characteristics.reason.value]]).</li><li>The creature dealing the damage can spend a Recovery.</li><li>The creature dealing the damage can shift up to [[@characteristics.reason.value]] squares.</li></ul>",
+      description: "<strong>Mark</strong> (free triggered action, when you or any ally deals rolled damage to a creature marked by you): Spend 1 focus for one benefit (one benefit per trigger):<ul><li>The ability deals extra damage equal to 1 + your Reason score. ([[/damage 1+@characteristics.reason.value]]).</li><li>The creature dealing the damage can spend a Recovery.</li><li>The creature dealing the damage can shift up to [[@characteristics.reason.value]] squares.</li></ul>",
       cost: 1,
       minLevel: 1,
     },
@@ -988,7 +988,7 @@ const TACTICIAN = {
     },
     {
       id: "spend-overwatch",
-      description: "<strong>Overwatch</strong> (Mastermind)<br><em>Trigger: A creature within 10 moves.</em><br>Effect: At any time during the target's movement, one ally can make a free strike against them.<br><strong>Spend 1 Focus:</strong> If the target has R < AVERAGE, they are slowed (EoT).",
+      description: "<strong>Overwatch</strong> (Mastermind)<br><em>Trigger: The target moves into a square adjacent to an ally.</em><br>Effect: The target’s speed is reduced to 0 until the end of the current turn.<br><strong>Spend 1 Focus:</strong> The ally can make a melee free strike against the target.",
       cost: 1,
       minLevel: 1,
       requiresSubclass: "Mastermind",
@@ -1018,9 +1018,9 @@ const TACTICIAN = {
       requiresSubclass: "Insurgent",
     },
     {
-      id: "spend-targets-of-opportunity",
-      description: "<strong>Targets of Opportunity</strong> (Mastermind, Mark Benefit): Until the end of the encounter, whenever you or any ally makes a strike against a creature marked by you, add one additional target to the strike.",
-      cost: 2,
+      id: "spend-goaded",
+      description: "<strong>Goaded</strong> (Mastermind, Mark Benefit): Whenever a creature marked by you uses a strike that targets you or any ally within your line of effect, you can use a free triggered action and spend 1 focus to change the target of the strike to you or another ally within your line of effect.",
+      cost: 1,
       minLevel: 2,
       requiresSubclass: "Mastermind",
     },
