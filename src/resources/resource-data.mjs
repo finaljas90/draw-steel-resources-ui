@@ -315,17 +315,23 @@ const ELEMENTALIST = {
     },
     {
       id: "damage-trigger",
-      description: "The first time each combat round that you or a creature within 10 squares takes damage that isn't untyped or holy damage, you gain 1 essence.",
+      description: "Whenever you use a signature or heroic ability with an elemental tag, the next heroic ability you use this encounter that shares an elemental tag costs 1 fewer essence. This doesn't stack.",
       amount: 1,
       minLevel: 1,
       trackUsage: "round",
     },
     {
-      id: "damage-trigger-lv4",
-      description: "The first time each combat round that you or a creature within 10 squares takes damage that isn't untyped or holy damage, you gain 2 essence. (Font of Essence)",
+      id: "damage-green",
+      description: "The first time each combat round that you or a creature within 10 squares regains Stamina or gains temporary Stamina, you gain 1 essence.",
+      amount: 1,
+      minLevel: 1,
+      trackUsage: "round",
+    },
+    {
+      id: "damage-green-lv4",
+      description: "The first time each combat round that you or a creature within 10 squares regains Stamina or gains temporary Stamina, you gain 2 essence.",
       amount: 2,
       minLevel: 4,
-      replaces: "damage-trigger",
       trackUsage: "round",
     },
   ],
@@ -382,14 +388,14 @@ const ELEMENTALIST = {
     type: "mantle",
     label: "Mantle of Essence",
     minLevel: 4,
-    threshold: 3,
+    threshold: 1,
     noThresholdLevel: 7, // at lv7+, no essence requirement (Mantle of Quintessence)
     activeColor: "green",
     subclassDescriptions: {
-      "Quaking Earth": "While you have 3 or more essence and are not dying, you exude an aura of magic whose distance is equal to your Reason score ([[@characteristics.reason.value]]). At the end of each of your turns, you can push each enemy in the area up to [[@characteristics.reason.value]] squares. You can activate and deactivate the aura at will (no action required).",
-      "Burning Grounds": "While you have 3 or more essence and are not dying, you exude an aura of magic whose distance is equal to your Reason score ([[@characteristics.reason.value]]). At the end of each of your turns, each enemy in the area takes [[/damage @characteristics.reason.value type=fire]]. You can activate and deactivate the aura at will (no action required).",
-      "Flowering Bed": "While you have 3 or more essence and are not dying, you exude an aura of magic whose distance is equal to your Reason score ([[@characteristics.reason.value]]). At the end of each of your turns, each ally in the area gains temporary Stamina equal to your Reason score ([[@characteristics.reason.value]]). You can activate and deactivate the aura at will (no action required).",
-      "Veiling Bed": "While you have 3 or more essence and are not dying, you exude an aura of magic whose distance is equal to your Reason score ([[@characteristics.reason.value]]). The area provides concealment for you and your allies. You can activate and deactivate the aura at will (no action required).",
+      "Quaking Earth": "Persistent 1: you exude an aura of magic whose distance is equal to your Reason score ([[@characteristics.reason.value]]). At the end of each of your turns, you can push each enemy in the area up to [[@characteristics.reason.value]] squares.",
+      "Burning Grounds": "Persistent 1: you exude an aura of magic whose distance is equal to your Reason score ([[@characteristics.reason.value]]). At the end of each of your turns, each enemy in the area takes [[/damage @characteristics.reason.value type=fire]].",
+      "Flowering Bed": "Persistent 1: you exude an aura of magic whose distance is equal to your Reason score ([[@characteristics.reason.value]]). At the end of each of your turns, each ally in the area gains temporary Stamina equal to your Reason score ([[@characteristics.reason.value]]).",
+      "Veiling Bed": "Persistent 1: you exude an aura of magic whose distance is equal to your Reason score ([[@characteristics.reason.value]]). The area provides concealment for you and your allies.",
     },
   },
 
@@ -1452,7 +1458,49 @@ const TROUBADOUR = {
 
   passiveEffects: [],
 };
+const SCION = {
+  id: "scion",
+  className: "Scion",
+  resourceName: "Balance",
 
+  gains: [
+    {
+      id: "combat-start",
+      description: "At the start of a combat encounter, you gain drama equal to your Victories.",
+      amount: "victories",
+      minLevel: 1,
+    },
+    {
+      id: "turn-start",
+      description: "At the start of each of your turns during combat, you gain 2 balance.",
+      amount: "2",
+      minLevel: 1,
+    },
+    {
+      id: "turn-start-lv7",
+      description: "At the start of each of your turns during combat, you gain 3 balance.",
+      amount: "3",
+      minLevel: 7,
+      replaces: "turn-start",
+    },
+    {
+      id: "weapon-trigger",
+      description: "The first time in a combat round that you or an ally within 10 squares of you uses an ability with a Weapon tag, you gain 1 balance.",
+      amount: 1,
+      minLevel: 1,
+      trackUsage: "round",
+    },
+    {
+      id: "magic-trigger",
+      description: "The first time in a combat round that you or an ally within 10 squares of you uses an ability with a Magic tag, you gain 1 balance.",
+      amount: 1,
+      minLevel: 1,
+      trackUsage: "round",
+    },
+  ],
+
+  passiveEffects: [],
+};
 // ── Registry ─────────────────────────────────────────────────────────────────
 
 /** All built-in class definitions, keyed by lowercase class name. */
@@ -1466,6 +1514,7 @@ export const CLASS_DEFINITIONS = {
   tactician:    TACTICIAN,
   talent:       TALENT,
   troubadour:   TROUBADOUR,
+  scion:        SCION,
 };
 
 /**
