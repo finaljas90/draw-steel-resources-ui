@@ -1497,8 +1497,22 @@ const SCION = {
       minLevel: 1,
       trackUsage: "round",
     },
+    {
+      id: "mythweaver",
+      description: "You gain 2 balance the first time in an encounter you or an ally within 10 squares rolls with an edge or uses one or more surges.",
+      amount: 2,
+      minLevel: 4,
+      trackUsage: "encounter",
+    },
   ],
 
+  spends: [
+    {
+      id: "spend-heed-the-call-of-glory",
+      description: "<strong>Heed the Call to Glory</strong> (Mythweaver, triggered action): The target ally gains a surge, the targets can then shift R ([[@characteristics.reason.value]]) squares. After the movement, or if they choose not to move, the targets gain an edge on their next ability used before the end of the encounter if they are adjacent to an enemy. <br><strong>Spend 1 Balance:</strong> The targets shift 2xR ([[2 * @characteristics.reason.value]]) instead.",
+      cost: 1,
+      minLevel: 1,
+      requiresSubclass: "Auteur",
   passiveEffects: [],
 };
 // ── Registry ─────────────────────────────────────────────────────────────────
